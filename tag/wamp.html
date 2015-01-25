@@ -51,22 +51,78 @@
     <div class="row">
 
         <div class="span9">
+        
+
+        
+
+
+    <div class='article'>
+        <div class="content-title">
+            <a href="http://www.chaoslog.com/ji-yu-wampde-ping-you-xi-tong.html"><h1>基于wamp的评优系统</h1></a>
+2015-01-25
+
+by <a class="url fn" href="http://www.chaoslog.com/author/z-jiang.html">Z. Jiang</a>
+ 
+
+
+ 
+        </div>
+        
+        <div><h1>前言</h1>
+<p>2012年为电信学部搭建的奖学金评优系统已经服役两年了，先后为2000名学生进行了服务，处理数据达50000条，大大降低了奖学金评定工作的任务难度。12年用linux做服务器，由于远程控制不便，13年放到了windows上，现以windows为例，将配置过程总结如下：</p>
+<h1>环境</h1>
+<p><a href="http://sourceforge.net/projects/wampserver/files/WampServer%202/Wampserver%202.4/Wampserver2.4-x64.exe/download">WampServer2.4</a> </br>
+<a href="https://github.com/kukumayas/Scholarship-Award">Scholarship-Award</a></p>
+<h1>文件说明</h1>
+<p><pre>
+  +admin        管理员端
+  +css          css样式文件夹
+  -database
+    award.sql       用于快速部署数据库
+  +fonts
+  +images
+  -wamp_conf
+    httpd.conf      apache配置文件
+    my.ini      MySQL配置文件
+    php.ini     PHP配置文件
+   ...          普通页面
+</pre></p>
+<h1>配置流程</h1>
+<ol>
+<li>安装wamp</li>
+<li>配置mysql的密码，按照源码中的my.ini配置wamp的my.ini，并配合phpmyadmin修改，注意自行修改路径。</li>
+<li>配置php，按照源码中的php.ini，主要是防止php报错显示，注意自行修改路径。</li>
+<li>配置apache，windows版本的wamp2.4有bug，不作配置会不稳定，经常停止工作，然后莫名重新工作，注意自行修改路径。</li>
+<li>将源代码解压缩到wamp的www文件夹</li>
+<li>进入<a href="http://localhost/phpmyadmin/">phpmyadmin</a>，创建新数据库，命名为award</li>
+<li>进入award数据库，导入-&gt;选择源代码中www\database\award.sql</li>
+</ol>
+<h1>关于得分</h1>
+<p>学生端输入的每一项都有一个得分，例如“集体活动”等，这些得分在页面提交时结算，如果需要，studentwork.php和research.php修改。</p>
+<h1>关于数据</h1>
+<h2>数据库</h2>
+<p>如果需要，再把数据库做详细介绍。</p>
+<h2>数据导入</h2>
+<p>如果测试用，可以直接往数据库中填一些toy data，或者根据自己现有数据格式自行写导入代码。抽时间把我的导入数据的代码挂到github上。</p>
+<h2>rank</h2>
+<p>学生填完了信息，由管理员审核通过之后，就需要对每种奖项按照得分进行排序，排序公式因年级、奖项而异。抽时间把我的rank代码挂到github上。</p>
+<h1>关闭学生端</h1>
+<p>打开index.php,将第14行代码<code>//window.location.replace("abc.html");</code>的注释取消掉即可。</p></div>
+        <hr />
+    </div>
+		
+<div class="pagination">
 <ul>
-    <li><a href="http://www.chaoslog.com/tag/nlp.html">NLP</a></li>
-    <li><a href="http://www.chaoslog.com/tag/language-network.html">language network</a></li>
-    <li><a href="http://www.chaoslog.com/tag/shua-ji.html">刷机</a></li>
-    <li><a href="http://www.chaoslog.com/tag/vivo-xshot.html">vivo xshot</a></li>
-    <li><a href="http://www.chaoslog.com/tag/scholarship-system.html">Scholarship System</a></li>
-    <li><a href="http://www.chaoslog.com/tag/ping-you-xi-tong.html">评优系统</a></li>
-    <li><a href="http://www.chaoslog.com/tag/dlut.html">DLUT</a></li>
-    <li><a href="http://www.chaoslog.com/tag/da-lian-li-gong-da-xue.html">大连理工大学</a></li>
-    <li><a href="http://www.chaoslog.com/tag/complex-network.html">complex network</a></li>
-    <li><a href="http://www.chaoslog.com/tag/wamp.html">wamp</a></li>
-    <li><a href="http://www.chaoslog.com/tag/upan-xiu-fu.html">U盘修复</a></li>
-    <li><a href="http://www.chaoslog.com/tag/php.html">PHP</a></li>
-    <li><a href="http://www.chaoslog.com/tag/root.html">root</a></li>
-    <li><a href="http://www.chaoslog.com/tag/liang-chan.html">量产</a></li>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="http://www.chaoslog.com/tag/wamp.html">1</a></li>
+
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+
 </ul>
+</div>
+ 
+  
         </div>
         
         <div class="span3">
