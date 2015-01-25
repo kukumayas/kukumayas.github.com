@@ -58,8 +58,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="http://www.chaoslog.com/upan-xiu-fu-wu-fa-ge-shi-hua-you-pan-fu-wu-rong-liang.html"><h1>u盘修复(无法格式化，有盘符无容量)</h1></a>
-2015-01-14
+            <a href="http://www.chaoslog.com/shi-yong-nltkhuo-de-ying-wen-dan-ci-de-fa-yin-gou-ci-yu-yi.html"><h1>使用NLTK获得英文单词的发音、构词、语义</h1></a>
+2015-01-25
 
 by <a class="url fn" href="http://www.chaoslog.com/author/z-jiang.html">Z. Jiang</a>
  
@@ -68,7 +68,101 @@ by <a class="url fn" href="http://www.chaoslog.com/author/z-jiang.html">Z. Jiang
  
         </div>
         
-        <div><p>朋友的u盘在插到别人的台式机上之后，能够识别但无法打开，且无法格式化。尝试chkdsk命令行修复、使用360的文件恢复和Easy Recovery这三条策略均无效。</p>
+        <div><h1>前言</h1>
+<p>2012年为电信学部搭建的奖学金评优系统已经服役两年了，先后为2000名学生进行了服务，处理数据达50000条，大大降低了奖学金评定工作的任务难度。12年用linux做服务器，由于远程控制不便，13年放到了windows上，现以windows为例，将配置过程总结如下：</p>
+<h1>环境</h1>
+<p><a href="http://sourceforge.net/projects/wampserver/files/WampServer%202/Wampserver%202.4/Wampserver2.4-x64.exe/download">WampServer2.4</a> </br>
+<a href="https://github.com/kukumayas/Scholarship-Award">Scholarship-Award</a></p>
+<h1>文件说明</h1>
+<p><pre>
+  +admin        管理员端
+  +css          css样式文件夹
+  -database
+    award.sql       用于快速部署数据库
+  +fonts
+  +images
+  -wamp_conf
+    httpd.conf      apache配置文件
+    my.ini      MySQL配置文件
+    php.ini     PHP配置文件
+   ...          普通页面
+</pre></p>
+<h1>配置流程</h1>
+<ol>
+<li>安装wamp</li>
+<li>配置mysql的密码，按照源码中的my.ini配置wamp的my.ini，并配合phpmyadmin修改，注意自行修改路径。</li>
+<li>配置php，按照源码中的php.ini，主要是防止php报错显示，注意自行修改路径。</li>
+<li>配置apache，windows版本的wamp2.4有bug，不作配置会不稳定，经常停止工作，然后莫名重新工作，注意自行修改路径。</li>
+<li>将源代码解压缩到wamp的www文件夹</li>
+<li>进入<a href="http://localhost/phpmyadmin/">phpmyadmin</a>，创建新数据库，命名为award</li>
+<li>进入award数据库，导入-&gt;选择源代码中www\database\award.sql</li>
+</ol>
+<h1>关于得分</h1>
+<p>学生端输入的每一项都有一个得分，例如“集体活动”等，这些得分在页面提交时结算，如果需要，studentwork.php和research.php修改。</p>
+<h1>关于数据</h1>
+<h2>数据库</h2>
+<p>如果需要，再把数据库做详细介绍。</p>
+<h2>数据导入</h2>
+<p>如果测试用，可以直接往数据库中填一些toy data，或者根据自己现有数据格式自行写导入代码。抽时间把我的导入数据的代码挂到github上。</p>
+<h2>rank</h2>
+<p>学生填完了信息，由管理员审核通过之后，就需要对每种奖项按照得分进行排序，排序公式因年级、奖项而异。抽时间把我的rank代码挂到github上。</p>
+<h1>关闭学生端</h1>
+<p>打开index.php,将第14行代码<code>//window.location.replace("abc.html");</code>的注释取消掉即可。</p></div>
+        <hr />
+    </div>
+		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="http://www.chaoslog.com/shi-yong-nltkhuo-de-ying-wen-dan-ci-de-fa-yin.html"><h2>使用NLTK获得英文单词的发音</h2></a>
+        <div class= "well small"> 2015-01-23
+
+by <a class="url fn" href="http://www.chaoslog.com/author/z-jiang.html">Z. Jiang</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>The CMU Pronunciation Dictionary corpus contains pronounciation transcriptions for over 100,000 words. It can be accessed as a list of entries (where each entry consists of a word, an identifier, and a transcription) or as a dictionary from words to lists of transcriptions. Transcriptions are encoded as tuples of ...</p> <a class="btn btn-info xsmall" href="http://www.chaoslog.com/shi-yong-nltkhuo-de-ying-wen-dan-ci-de-fa-yin.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="http://www.chaoslog.com/yu-yan-wang-luo-jie-gou-gong-neng-he-jin-hua.html"><h2>语言网络，结构、功能和进化</h2></a>
+        <div class= "well small"> 2015-01-23
+
+by <a class="url fn" href="http://www.chaoslog.com/author/z-jiang.html">Z. Jiang</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>human languages is a kind of complex network,  language networks can be built up to characterise their properties, and show in which direction models are being developed.</p> <a class="btn btn-info xsmall" href="http://www.chaoslog.com/yu-yan-wang-luo-jie-gou-gong-neng-he-jin-hua.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="http://www.chaoslog.com/upan-xiu-fu-wu-fa-ge-shi-hua-you-pan-fu-wu-rong-liang.html"><h2>u盘修复(无法格式化，有盘符无容量)</h2></a>
+        <div class= "well small"> 2015-01-14
+
+by <a class="url fn" href="http://www.chaoslog.com/author/z-jiang.html">Z. Jiang</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>朋友的u盘在插到别人的台式机上之后，能够识别但无法打开，且无法格式化。尝试chkdsk命令行修复、使用360的文件恢复和Easy Recovery这三条策略均无效。</p>
 <p>后来通过量产工具得到了不完美解决。大体如下：
 1、首先下载<a href="http://www.upan.cc/tools/test/ChipEasy.html">ChipEasy</a>工具，确定该u盘的主控芯片，朋友的u盘是SM325AC
 2、下载芯片型号(SM325AC)对应的<a href="http://www.upantool.com/liangchan/SMI/2011/SM32x_V2.02.04_CN.html">量产工具</a>
@@ -78,10 +172,9 @@ by <a class="url fn" href="http://www.chaoslog.com/author/z-jiang.html">Z. Jiang
 <p>上述过程第一次运行后，虽然提示成功，但u盘并没有修复。重启了一次电脑后，u盘成功修复了，能够正常使用了。但是，u盘被彻底格式化了，原来的数据完全丢失，里边没有任何内容，使用文件恢复、Easy Recovery也无济于事。这是一次不完美的修复。</p>
 <p>如果再遇到此类情况，
 1、在设置中尝试不点选格式化，这样也许u盘里的文件就可以恢复了。
-2、打算尝试使用 <a href="http://xiazai.zol.com.cn/detail/41/401835.shtml">u盘修复工具Mformat</a>，这个工具看上去集成了量产的许多功能，可能会一键式修复，有待尝试。</p></div>
-        <hr />
-    </div>
-		
+2 ...</p> <a class="btn btn-info xsmall" href="http://www.chaoslog.com/upan-xiu-fu-wu-fa-ge-shi-hua-you-pan-fu-wu-rong-liang.html">read more</a></div>
+    </div>	
+				
 
  
         
@@ -172,59 +265,14 @@ by <a class="url fn" href="http://www.chaoslog.com/author/z-jiang.html">Z. Jiang
 </pre></div> <a class="btn btn-info xsmall" href="http://www.chaoslog.com/gu-du.html">read more</a></div>
     </div>	
 				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="http://www.chaoslog.com/hello-world.html"><h2>Hello World</h2></a>
-        <div class= "well small"> 2014-11-22
-
-by <a class="url fn" href="http://www.chaoslog.com/author/z-jiang.html">Z. Jiang</a>
- 
-
-
- </div>
-        <div class="summary"><div class="highlight"><pre><span class="n">Title</span><span class="o">:</span> <span class="n">Hello</span> <span class="n">World</span>
-<span class="n">Date</span><span class="o">:</span> <span class="mi">2014</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">22</span>
-
-<span class="n">git</span> <span class="n">add</span> <span class="o">.</span>
-<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s1">&#39;11.27.14&#39;</span>
-<span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">master</span>
-</pre></div> <a class="btn btn-info xsmall" href="http://www.chaoslog.com/hello-world.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="http://www.chaoslog.com/kan-guo-de-dian-ying-movies-ive-watched.html"><h2>看过的电影-Movies I've watched</h2></a>
-        <div class= "well small"> 2014-11-22
-
-by <a class="url fn" href="http://www.chaoslog.com/author/z-jiang.html">Z. Jiang</a>
- 
-
-
- </div>
-        <div class="summary"><div class="highlight"><pre><span class="err">消失的恋人</span>   <span class="o">-</span>   <span class="n">Gone</span> <span class="n">Girl</span>   <span class="o">-</span>   <span class="err">“最悲惨的婚姻莫过于，她要的是一个故事，而你则需要成为这个故事里的</span><span class="n">NPC</span><span class="err">。这就是所谓的束缚。”</span>
-<span class="err">国王的演讲</span>   <span class="o">-</span>   <span class="n">The</span> <span class="n">King</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">Speech</span>   <span class="o">-</span>   <span class="err">“比困难更难克服的，是内心的恐惧”</span>
-<span class="err">千与千寻</span>        <span class="o">-</span>   <span class="err">千と千尋の神隠し</span>    <span class="o">-</span>   <span class="err">“如果让人痛苦的仅仅是&#39;痛苦&#39;这个字眼，痛苦又算得了什么呢，安静的做好眼前事吧”</span>
-<span class="err">秒速五厘米</span>   <span class="o">-</span>   <span class="err">新海诚</span> <span class="o">-</span>   <span class="err">“比起最后没能在一起更让我感到可惜的，是想到自己身上连那份坚持都不曾有过。这或许是因为，从不曾像远野那样安静、温柔，因此，也从来不配拥有那种经历。”</span>
-</pre></div> <a class="btn btn-info xsmall" href="http://www.chaoslog.com/kan-guo-de-dian-ying-movies-ive-watched.html">read more</a></div>
-    </div>	
-				
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
 
     <li class="active"><a href="http://www.chaoslog.com/author/z-jiang.html">1</a></li>
+    <li class=""><a href="http://www.chaoslog.com/author/z-jiang2.html">2</a></li>
 
-    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+    <li class="next"><a href="http://www.chaoslog.com/author/z-jiang2.html">Next &rarr;</a></li>
 
 </ul>
 </div>
@@ -255,7 +303,10 @@ by <a class="url fn" href="http://www.chaoslog.com/author/z-jiang.html">Z. Jiang
                 Categories
                 </li>
                 
+                <li><a href="http://www.chaoslog.com/category/linguistic.html">Linguistic</a></li>
                 <li><a href="http://www.chaoslog.com/category/misc.html">misc</a></li>
+                <li><a href="http://www.chaoslog.com/category/nltk.html">NLTK</a></li>
+                <li><a href="http://www.chaoslog.com/category/php.html">PHP</a></li>
                    
             </ul>
             </div>

@@ -51,62 +51,78 @@
     <div class="row">
 
         <div class="span9">
+        
+
+        
+
+
     <div class='article'>
         <div class="content-title">
-            <h1>读过的书 - Books I've read</h1>
-2014-11-22
+            <a href="http://www.chaoslog.com/shi-yong-nltkhuo-de-ying-wen-dan-ci-de-fa-yin-gou-ci-yu-yi.html"><h1>使用NLTK获得英文单词的发音、构词、语义</h1></a>
+2015-01-25
 
 by <a class="url fn" href="http://www.chaoslog.com/author/z-jiang.html">Z. Jiang</a>
  
 
 
+ 
         </div>
-	
-        <div><p>文学类：</p>
-<div class="highlight"><pre><span class="err">傲慢与偏见</span>       <span class="o">-</span>       <span class="n">Pride</span> <span class="n">and</span> <span class="n">Prejudice</span>
-<span class="err">平凡的世界</span>       <span class="o">-</span>       <span class="n">Ordinary</span> <span class="n">World</span>
-<span class="err">挪威的森林</span>       <span class="o">-</span>       <span class="n">Norwegian</span> <span class="n">Wood</span>
-<span class="err">穆斯林的葬礼</span>
-<span class="err">钢铁是怎样炼成的</span>
-<span class="err">幻城</span>
-<span class="err">皮囊</span>
-<span class="err">白夜行</span>
-<span class="err">幻夜</span>
-<span class="err">时生</span>
-<span class="err">绑架游戏</span>
-<span class="err">嫌疑人</span><span class="n">X</span><span class="err">的献身</span>
-<span class="err">侦探伽利略</span>
-<span class="err">禅者的初心</span>
-<span class="err">活着</span>
-</pre></div>
-
-
-<p>传记类：</p>
-<div class="highlight"><pre><span class="err">乔布斯传</span>
-</pre></div>
-
-
-<p>技术类：</p>
-<div class="highlight"><pre><span class="n">Thinkin</span> <span class="n">Java</span>
-<span class="n">Java</span><span class="err">核心编程</span>
-</pre></div></div>
-	
-        <hr>
-
-        <h2>Comments</h2>
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-    var disqus_shortname = 'zchaosblog'; 
-    var disqus_title = '读过的书 - Books I've read';
-
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        
+        <div><h1>前言</h1>
+<p>2012年为电信学部搭建的奖学金评优系统已经服役两年了，先后为2000名学生进行了服务，处理数据达50000条，大大降低了奖学金评定工作的任务难度。12年用linux做服务器，由于远程控制不便，13年放到了windows上，现以windows为例，将配置过程总结如下：</p>
+<h1>环境</h1>
+<p><a href="http://sourceforge.net/projects/wampserver/files/WampServer%202/Wampserver%202.4/Wampserver2.4-x64.exe/download">WampServer2.4</a> </br>
+<a href="https://github.com/kukumayas/Scholarship-Award">Scholarship-Award</a></p>
+<h1>文件说明</h1>
+<p><pre>
+  +admin        管理员端
+  +css          css样式文件夹
+  -database
+    award.sql       用于快速部署数据库
+  +fonts
+  +images
+  -wamp_conf
+    httpd.conf      apache配置文件
+    my.ini      MySQL配置文件
+    php.ini     PHP配置文件
+   ...          普通页面
+</pre></p>
+<h1>配置流程</h1>
+<ol>
+<li>安装wamp</li>
+<li>配置mysql的密码，按照源码中的my.ini配置wamp的my.ini，并配合phpmyadmin修改，注意自行修改路径。</li>
+<li>配置php，按照源码中的php.ini，主要是防止php报错显示，注意自行修改路径。</li>
+<li>配置apache，windows版本的wamp2.4有bug，不作配置会不稳定，经常停止工作，然后莫名重新工作，注意自行修改路径。</li>
+<li>将源代码解压缩到wamp的www文件夹</li>
+<li>进入<a href="http://localhost/phpmyadmin/">phpmyadmin</a>，创建新数据库，命名为award</li>
+<li>进入award数据库，导入-&gt;选择源代码中www\database\award.sql</li>
+</ol>
+<h1>关于得分</h1>
+<p>学生端输入的每一项都有一个得分，例如“集体活动”等，这些得分在页面提交时结算，如果需要，studentwork.php和research.php修改。</p>
+<h1>关于数据</h1>
+<h2>数据库</h2>
+<p>如果需要，再把数据库做详细介绍。</p>
+<h2>数据导入</h2>
+<p>如果测试用，可以直接往数据库中填一些toy data，或者根据自己现有数据格式自行写导入代码。抽时间把我的导入数据的代码挂到github上。</p>
+<h2>rank</h2>
+<p>学生填完了信息，由管理员审核通过之后，就需要对每种奖项按照得分进行排序，排序公式因年级、奖项而异。抽时间把我的rank代码挂到github上。</p>
+<h1>关闭学生端</h1>
+<p>打开index.php,将第14行代码<code>//window.location.replace("abc.html");</code>的注释取消掉即可。</p></div>
+        <hr />
     </div>
+		
+<div class="pagination">
+<ul>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="http://www.chaoslog.com/category/php.html">1</a></li>
+
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+
+</ul>
+</div>
+ 
+  
         </div>
         
         <div class="span3">
