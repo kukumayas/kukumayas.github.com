@@ -1,187 +1,148 @@
 <!DOCTYPE html>
 <html lang="zhs">
-<head>
-    <meta charset="utf8">
-    <title>专注机器学习和移动互联网</title>
-    <meta name="description" content="">
-    <meta name="author" content="Z. Jiang">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="utf-8"/>
 
-    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-    <!--[if lt IE 9]>
-    <script src="http://www.chaoslog.com/theme/html5.js"></script>
-    <![endif]-->
+    <title>  PHP
+ | Chaoslog</title>
 
-    <!-- Le styles -->
-    <link href="http://www.chaoslog.com/theme/bootstrap.min.css" rel="stylesheet">
-    <link href="http://www.chaoslog.com/theme/bootstrap.min.responsive.css" rel="stylesheet">
-    <link href="http://www.chaoslog.com/theme/local.css" rel="stylesheet">
-    <link href="http://www.chaoslog.com/theme/pygments.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="author" content=""/>
 
-    <!-- So Firefox can bookmark->"abo this site" -->
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css"/>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/jquery.magnific-popup/0.9.9/magnific-popup.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/jquery.mglass.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/pygment-solarized-dark.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/style.css"/>
 
-</head>
+    <!-- Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+    <link href='//fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'/>
+    <link href='//fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'/>
 
-<body>
 
-<div class="navbar">
-    <div class="navbar-inner">
+    <link rel="icon" href="http://www.chaoslog.com/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="http://www.chaoslog.com/favicon.ico" type="image/x-icon">
+
+    <!-- Feeds -->
+
+
+  </head>
+
+  <body>
     <div class="container">
 
-         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-             <span class="icon-bar"></span>
-             <span class="icon-bar"></span>
-             <span class="icon-bar"></span>
-         </a>
-
-        <a class="brand" href="http://www.chaoslog.com">专注机器学习和移动互联网</a>
-
-        <div class="nav-collapse">
-        <ul class="nav">
-            
-        </ul>
+      <header>
+        <div class="page-header">
+          <h1><a href="http://www.chaoslog.com">Chaoslog</a> <small></small></h1>
         </div>
-        
-    </div>
-    </div>
-</div>
 
-<div class="container">
-    <div class="content">
-    <div class="row">
-
-        <div class="span9">
-        
-
-        
-
-
-    <div class='article'>
-        <div class="content-title">
-            <a href="http://www.chaoslog.com/ji-yu-wampde-ping-you-xi-tong.html"><h1>基于wamp的评优系统</h1></a>
-2015-01-25
-
-by <a class="url fn" href="http://www.chaoslog.com/author/z-jiang.html">Z. Jiang</a>
- 
-
-
- 
+        <div class="navbar">
+          <div class="navbar-inner">
+            <a class="brand" href="http://www.chaoslog.com" title="">Chaoslog</a>
+            <ul class="nav">
+            </ul>
+          </div>
         </div>
-        
-        <div><h1>前言</h1>
-<p>2012年为电信学部搭建的奖学金评优系统已经服役两年了，先后为2000名学生进行了服务，处理数据达50000条，大大降低了奖学金评定工作的任务难度。12年用linux做服务器，由于远程控制不便，13年放到了windows上，现以windows为例，将配置过程总结如下：</p>
-<h1>环境</h1>
-<p><a href="http://sourceforge.net/projects/wampserver/files/WampServer%202/Wampserver%202.4/Wampserver2.4-x64.exe/download">WampServer2.4</a> </br>
-<a href="https://github.com/kukumayas/Scholarship-Award">Scholarship-Award</a></p>
-<h1>文件说明</h1>
-<p><pre>
-  +admin        管理员端
-  +css          css样式文件夹
-  -database
-    award.sql       用于快速部署数据库
-  +fonts
-  +images
-  -wamp_conf
-    httpd.conf      apache配置文件
-    my.ini      MySQL配置文件
-    php.ini     PHP配置文件
-   ...          普通页面
-</pre></p>
-<h1>配置流程</h1>
-<ol>
-<li>安装wamp</li>
-<li>配置mysql的密码，按照源码中的my.ini配置wamp的my.ini，并配合phpmyadmin修改，注意自行修改路径。</li>
-<li>配置php，按照源码中的php.ini，主要是防止php报错显示，注意自行修改路径。</li>
-<li>配置apache，windows版本的wamp2.4有bug，不作配置会不稳定，经常停止工作，然后莫名重新工作，注意自行修改路径。</li>
-<li>将源代码解压缩到wamp的www文件夹</li>
-<li>进入<a href="http://localhost/phpmyadmin/">phpmyadmin</a>，创建新数据库，命名为award</li>
-<li>进入award数据库，导入-&gt;选择源代码中www\database\award.sql</li>
-</ol>
-<h1>关于得分</h1>
-<p>学生端输入的每一项都有一个得分，例如“集体活动”等，这些得分在页面提交时结算，如果需要，studentwork.php和research.php修改。</p>
-<h1>关于数据</h1>
-<h2>数据库</h2>
-<p>如果需要，再把数据库做详细介绍。</p>
-<h2>数据导入</h2>
-<p>如果测试用，可以直接往数据库中填一些toy data，或者根据自己现有数据格式自行写导入代码。抽时间把我的导入数据的代码挂到github上。</p>
-<h2>rank</h2>
-<p>学生填完了信息，由管理员审核通过之后，就需要对每种奖项按照得分进行排序，排序公式因年级、奖项而异。抽时间把我的rank代码挂到github上。</p>
-<h1>关闭学生端</h1>
-<p>打开index.php,将第14行代码<code>//window.location.replace("abc.html");</code>的注释取消掉即可。</p></div>
-        <hr />
-    </div>
-		
-<div class="pagination">
-<ul>
-    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+      </header>
 
-    <li class="active"><a href="http://www.chaoslog.com/category/php.html">1</a></li>
+      <section>
 
-    <li class="next disabled"><a href="#">&rarr; Next</a></li>
-
-</ul>
-</div>
- 
-  
+        <div class="row">
+          <div class=" span12  ">
+  <h1>
+    <a  href="http://www.chaoslog.com/category/php.html" rel="bookmark" title="Permalink to PHP articles">PHP articles</a>
+  </h1>
+          </div>
         </div>
-        
-        <div class="span3">
 
-            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
-            <ul class="nav nav-list">
-                <li class="nav-header"> 
-                Site
-                </li>
-            
-                <li><a href="http://www.chaoslog.com/">所有文章</a>
-                <li><a href="http://www.chaoslog.com/tags.html">标签分类</a>
+        <div class="row">
 
 
+          <div class=" span12 " id="content" role="main">
+  <dl class="dl-horizontal">
+      <dt><abbr class="published" title="2015-01-25T00:00:00+08:00">2015-01-25</abbr></dt>
+      <dd><a href="http://www.chaoslog.com/ji-yu-wampde-ping-you-xi-tong.html">基于wamp的评优系统</a></dd>
+  </dl>
+          </div>
 
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- TODO: make footer sticky -->
+    <footer class="container-fluid">
+      <div class="container">
+        <div class="row">
+
+            <div class="span2">
+                <h5>Social</h5>
+                <ul class="unstyled">
+                  <li>  <a href="http://weibo.com/271421133">
+      <img src="http://g.etfv.co/http://weibo.com?defaulticon=lightpng" width="16" height="16" class="icon" alt="weibo.com icon"/>
+    微博
+  </a></li>
+                  <li>  <a href="https://twitter.com/kukumayas">
+      <i class="fa fa-twitter"></i>
+    twitter
+  </a></li>
+                  <li>  <a href="https://www.linkedin.com/in/kukumayas">
+      <img src="http://g.etfv.co/http://www.linkedin.com?defaulticon=lightpng" width="16" height="16" class="icon" alt="www.linkedin.com icon"/>
+    linkedin
+  </a></li>
+                  <li>  <a href="https://github.com/kukumayas">
+      <i class="fa fa-github"></i>
+    github
+  </a></li>
+                </ul>
+            </div>
+            <div class="span2">
+            </div>
+
+          <div class="span2">
+            <h5>Browse content by</h5>
+            <ul class="fa-ul">
 
             </ul>
-            </div>
+          </div>
 
-            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
-            <ul class="nav nav-list">
-                <li class="nav-header"> 
-                Categories
-                </li>
-                
-                <li><a href="http://www.chaoslog.com/category/linguistic.html">Linguistic</a></li>
-                <li><a href="http://www.chaoslog.com/category/misc.html">misc</a></li>
-                <li><a href="http://www.chaoslog.com/category/nltk.html">NLTK</a></li>
-                <li><a href="http://www.chaoslog.com/category/php.html">PHP</a></li>
-                   
-            </ul>
-            </div>
+          <div class="span2 muted">
+            <h5>Copyright notice</h5>
+            <p>© Copyright 2015 超(James).</p>
+          </div>
 
+          <div class="span2 muted">
+            <h5>Disclaimer</h5>
+              <p>All opinions expressed in this site are my own personal opinions and are not endorsed by, nor do they represent the opinions of my previous, current and future employers or any of its affiliates, partners or customers.</p>
+          </div>
 
+          <div class="span2">
+            <h5 class="pull-right"><a href="#" class="fa fa-arrow-up"> Back to top</a></h5>
+          </div>
 
-            <div class="social">
-            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
-            <ul class="nav nav-list">
-                <li class="nav-header"> 
-                Social
-                </li>
-           
-                <li><a href="http://weibo.com/271421133">weibo</a></li>
-                <li><a href="https://twitter.com/kukumayas">twitter</a></li>
-            </ul>
-            </div>
-            </div>
+        </div>
+      </div>
 
-        </div>  
-    </div>     </div> 
-<footer>
-<br />
-<p><a href="http://www.chaoslog.com">Z. Jiang's blog</a> &copy; Z. Jiang 2014</p>
-</footer>
+      <div class="container">
+        <div class="row span12 muted text-center">
+          Site generated by <a href="http://getpelican.com"> Pelican</a>.<br/>
+          <a href="https://github.com/kdeldycke/plumage"> Plumage</a> theme by <a href="http://kevin.deldycke.com">Kevin Deldycke</a>.
+        </div>
+      </div>
 
-</div> <!-- /container -->
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-collapse.js"></script>
-<script>var _gaq=[['_setAccount','UA-57032017-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
- 
-</body>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="//cdn.jsdelivr.net/jquery.magnific-popup/0.9.9/jquery.magnific-popup.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script src="http://www.chaoslog.com/theme/js/jquery.mglass.js"></script>
+    <script src="http://www.chaoslog.com/theme/js/application.js"></script>
+
+  </body>
 </html>

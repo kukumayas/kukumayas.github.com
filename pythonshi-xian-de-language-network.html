@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zhs">
+  <head>
+    <meta charset="utf-8"/>
+
+    <title>  Python实现的language network
+ | Chaoslog</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="author" content=""/>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css"/>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/jquery.magnific-popup/0.9.9/magnific-popup.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/jquery.mglass.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/pygment-solarized-dark.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/style.css"/>
+
+    <!-- Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+    <link href='//fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'/>
+    <link href='//fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'/>
+
+
+    <link rel="icon" href="http://www.chaoslog.com/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="http://www.chaoslog.com/favicon.ico" type="image/x-icon">
+
+    <!-- Feeds -->
+
+
+  </head>
+
+  <body>
+    <div class="container">
+
+      <header>
+        <div class="page-header">
+          <h1><a href="http://www.chaoslog.com">Chaoslog</a> <small></small></h1>
+        </div>
+
+        <div class="navbar">
+          <div class="navbar-inner">
+            <a class="brand" href="http://www.chaoslog.com" title="">Chaoslog</a>
+            <ul class="nav">
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <section>
+
+        <div class="row">
+          <div class=" span9  ">
+  <h1>
+    <a href="http://www.chaoslog.com/pythonshi-xian-de-language-network.html" rel="bookmark" title="Permalink to Python实现的language network">Python实现的language network</a>
+  </h1>
+          </div>
+        </div>
+
+        <div class="row">
+
+
+          <div class=" span9 " id="content" role="main">
+  
+
+  <div>
+    <h1>前言</h1>
+<p>在“语言网络，结构、功能和进化”[1]一文中，大概了解了language network大概是怎么回事。现在尝试使用python对给定语料进行解析，构建词语共现网络并进行可视化。</p>
+<h1>环境</h1>
+<p><a href="http://networkx.github.io/documentation/latest/download.html">NetworkX</a>  (注：<a href="http://continuum.io/downloads">Anaconda</a>自带NetworkX，无需安装)</p>
+<h1>NetworkX中文说明</h1>
+<p>NetworkX [2]的代码非常简单，基础教程中文总结版：</p>
+<div class="highlight"><pre><span class="err">#</span> <span class="nx">coding</span><span class="o">:</span><span class="nx">utf8</span>
+<span class="kr">import</span> <span class="nx">matplotlib</span><span class="p">.</span><span class="nx">pyplot</span> <span class="nx">as</span> <span class="nx">plt</span>
+<span class="kr">import</span> <span class="nx">networkx</span> <span class="nx">as</span> <span class="nx">nx</span>
+<span class="nx">from</span> <span class="nx">networkx</span><span class="p">.</span><span class="nx">convert</span> <span class="kr">import</span> <span class="nx">convert_to_undirected</span><span class="p">,</span> <span class="nx">convert_to_directed</span>
+
+
+
+<span class="err">#</span> <span class="nx">You</span> <span class="nx">might</span> <span class="nx">notice</span> <span class="nx">that</span> <span class="nx">nodes</span> <span class="nx">and</span> <span class="nx">edges</span> <span class="nx">are</span> <span class="nx">not</span> <span class="nx">specified</span> <span class="nx">as</span> <span class="nx">NetworkX</span> <span class="nx">objects</span><span class="p">.</span> <span class="nx">This</span> <span class="nx">leaves</span> <span class="nx">you</span> <span class="nx">free</span> <span class="nx">to</span> <span class="nx">use</span> <span class="nx">meaningful</span> <span class="nx">items</span> <span class="nx">as</span> <span class="nx">nodes</span> <span class="nx">and</span> <span class="nx">edges</span><span class="p">.</span> <span class="nx">The</span> <span class="nx">most</span> <span class="nx">common</span> <span class="nx">choices</span> <span class="nx">are</span> <span class="nx">numbers</span> <span class="nx">or</span> <span class="nx">strings</span><span class="p">,</span> <span class="nx">but</span> <span class="nx">a</span> <span class="nx">node</span> <span class="nx">can</span> <span class="nx">be</span> <span class="nx">any</span> <span class="nx">hashable</span> <span class="nx">object</span> <span class="p">(</span><span class="nx">except</span> <span class="nx">None</span><span class="p">),</span> <span class="nx">and</span> <span class="nx">an</span> <span class="nx">edge</span> <span class="nx">can</span> <span class="nx">be</span> <span class="nx">associated</span> <span class="kd">with</span> <span class="nx">any</span> <span class="nx">object</span> <span class="nx">x</span> <span class="nx">using</span> <span class="nx">G</span><span class="p">.</span><span class="nx">add_edge</span><span class="p">(</span><span class="nx">n1</span><span class="p">,</span><span class="nx">n2</span><span class="p">,</span><span class="nx">object</span><span class="o">=</span><span class="nx">x</span><span class="p">).</span>
+<span class="err">#</span> <span class="err">在</span><span class="nx">networkx</span><span class="err">所构建的图中，所有的节点只需要是可哈希的对象就行；所有的边也可以指定对象（用对象作为关系类型），如果想让整个图抹去所有类的信息，可以用</span><span class="nx">convert_node_labels_to_integers</span><span class="p">()</span><span class="err">，直接构造一个同构的基本图</span>
+
+
+<span class="nx">G</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">Graph</span><span class="p">()</span>  <span class="err">#</span> <span class="err">创建图的数据结构</span>
+
+
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_node</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="err">#</span> <span class="err">往图中加一个节点</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_nodes_from</span><span class="p">(</span><span class="cp">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="cp">]</span><span class="p">)</span>  <span class="err">#</span> <span class="err">往图中加列表中的节点</span>
+<span class="nx">H</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">path_graph</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="err">#</span> <span class="err">创建一个路径图，英文名叫</span><span class="nx">nbunch</span><span class="err">，</span><span class="mi">10</span><span class="err">表示这个图具有节点</span> <span class="mi">0</span><span class="o">-</span><span class="mi">9</span>
+<span class="nx">nx</span><span class="p">.</span><span class="nx">draw</span><span class="p">(</span><span class="nx">H</span><span class="p">)</span>
+<span class="nx">plt</span><span class="p">.</span><span class="nx">show</span><span class="p">()</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_nodes_from</span><span class="p">(</span><span class="nx">H</span><span class="p">)</span>  <span class="err">#</span> <span class="err">把</span><span class="nx">H</span><span class="err">中的所有节点加到</span><span class="nx">G</span><span class="err">里</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_node</span><span class="p">(</span><span class="nx">H</span><span class="p">)</span>  <span class="err">#</span> <span class="err">把</span><span class="nx">H</span><span class="err">作为一个节点加到</span><span class="nx">G</span><span class="err">里</span>
+
+
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_edge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>  <span class="err">#</span> <span class="err">增加边，自动增加节点</span>
+<span class="nx">e</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_edge</span><span class="p">(</span><span class="o">*</span><span class="nx">e</span><span class="p">)</span>  <span class="err">#</span> <span class="o">*</span><span class="nx">e</span><span class="err">表示把</span><span class="nx">e</span><span class="err">中的元素拆开，按照方法</span><span class="nx">add_edge</span><span class="err">的参数顺序依次把参数传进去</span>
+<span class="nx">print</span> <span class="nx">G</span><span class="p">.</span><span class="nx">edges</span><span class="p">()</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_edges_from</span><span class="p">(</span><span class="cp">[</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="cp">]</span><span class="p">)</span>  <span class="err">#</span> <span class="err">从可迭代的容器里增加一组边</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_edges_from</span><span class="p">(</span><span class="nx">H</span><span class="p">.</span><span class="nx">edges</span><span class="p">())</span>  <span class="err">#</span> <span class="err">把另一个图中的边加进来</span>
+
+
+<span class="nx">G</span><span class="p">.</span><span class="nx">remove_node</span><span class="p">(</span><span class="nx">H</span><span class="p">)</span>  <span class="err">#</span> <span class="err">从</span><span class="nx">G</span><span class="err">里删掉</span><span class="nx">H</span><span class="err">中的节点</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">clear</span><span class="p">()</span>  <span class="err">#</span> <span class="err">清空</span>
+
+
+
+<span class="err">#</span> <span class="err">增加重复的节点，会无视现有的节点</span><span class="p">,</span> <span class="err">新加节点和边若已在图中，不会改变</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_edges_from</span><span class="p">(</span><span class="cp">[</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="cp">]</span><span class="p">)</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_edge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_node</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_node</span><span class="p">(</span><span class="s2">&quot;spam&quot;</span><span class="p">)</span>  <span class="err">#</span> <span class="nx">adds</span> <span class="nx">node</span> <span class="s2">&quot;spam&quot;</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_nodes_from</span><span class="p">(</span><span class="s2">&quot;spam&quot;</span><span class="p">)</span>  <span class="err">#</span> <span class="nx">adds</span> <span class="mi">4</span> <span class="nx">nodes</span><span class="o">:</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span>
+
+
+<span class="err">#</span> <span class="err">计数</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">number_of_nodes</span><span class="p">()</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">number_of_edges</span><span class="p">()</span>
+
+<span class="err">#</span> <span class="err">得到节点边和相邻点</span>
+<span class="nx">print</span> <span class="nx">G</span><span class="p">.</span><span class="nx">nodes</span><span class="p">()</span>
+<span class="nx">print</span> <span class="nx">G</span><span class="p">.</span><span class="nx">edges</span><span class="p">()</span>
+<span class="nx">print</span> <span class="nx">G</span><span class="p">.</span><span class="nx">neighbors</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="err">#</span> <span class="err">怎么实现的呢？，不会是挨个遍历吧</span>
+
+<span class="err">#</span> <span class="err">删除节点</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">remove_nodes_from</span><span class="p">(</span><span class="s2">&quot;spam&quot;</span><span class="p">)</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">remove_edge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+
+<span class="nx">H</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">DiGraph</span><span class="p">(</span><span class="nx">G</span><span class="p">)</span>  <span class="err">#</span> <span class="err">从已有无向图构建有向图</span>
+<span class="nx">print</span> <span class="nx">H</span><span class="p">.</span><span class="nx">edges</span><span class="p">()</span>  <span class="err">#</span> <span class="err">现在二元组的顺序很重要了</span>
+<span class="nx">edgelist</span> <span class="o">=</span> <span class="cp">[</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="cp">]</span>
+<span class="nx">H</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">Graph</span><span class="p">(</span><span class="nx">edgelist</span><span class="p">)</span>  <span class="err">#</span> <span class="err">根据边构建有向图</span>
+
+
+
+
+<span class="nx">print</span> <span class="nx">G</span><span class="cp">[</span><span class="mi">1</span><span class="cp">]</span>  <span class="err">#</span> <span class="err">返回与</span><span class="mi">1</span><span class="err">相邻的点，注意不要修改返回值，不要随便</span><span class="nx">G</span><span class="cp">[</span><span class="mi">1</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">xx</span>
+<span class="nx">print</span> <span class="nx">G</span><span class="cp">[</span><span class="mi">1</span><span class="cp">][</span><span class="mi">2</span><span class="cp">]</span>  <span class="err">#</span> <span class="err">返回</span><span class="mi">1</span> <span class="mi">2</span><span class="err">这条边的信息</span>
+
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_edge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="nx">G</span><span class="cp">[</span><span class="mi">1</span><span class="cp">][</span><span class="mi">3</span><span class="cp">][</span><span class="s1">&#39;color&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="s1">&#39;blue&#39;</span>
+
+
+<span class="nx">FG</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">Graph</span><span class="p">()</span>
+<span class="nx">FG</span><span class="p">.</span><span class="nx">add_weighted_edges_from</span><span class="p">(</span><span class="cp">[</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.125</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">0.375</span><span class="p">)</span><span class="cp">]</span><span class="p">)</span>
+<span class="k">for</span> <span class="nx">n</span><span class="p">,</span> <span class="nx">nbrs</span> <span class="k">in</span> <span class="nx">FG</span><span class="p">.</span><span class="nx">adjacency_iter</span><span class="p">()</span><span class="o">:</span>  <span class="err">#</span> <span class="err">怎么实现的？邻接迭代</span>
+<span class="k">for</span> <span class="nx">nbr</span><span class="p">,</span> <span class="nx">eattr</span> <span class="k">in</span> <span class="nx">nbrs</span><span class="p">.</span><span class="nx">items</span><span class="p">()</span><span class="o">:</span>
+<span class="nx">data</span> <span class="o">=</span> <span class="nx">eattr</span><span class="cp">[</span><span class="s1">&#39;weight&#39;</span><span class="cp">]</span>
+<span class="k">if</span> <span class="nx">data</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="o">:</span> <span class="nx">print</span><span class="p">(</span><span class="s1">&#39;(%d, %d, %.3f)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nx">n</span><span class="p">,</span> <span class="nx">nbr</span><span class="p">,</span> <span class="nx">data</span><span class="p">))</span>
+
+
+<span class="err">#</span> <span class="nx">Attributes</span> <span class="nx">such</span> <span class="nx">as</span> <span class="nx">weights</span><span class="p">,</span> <span class="nx">labels</span><span class="p">,</span> <span class="nx">colors</span><span class="p">,</span> <span class="nx">or</span> <span class="nx">whatever</span> <span class="nx">Python</span> <span class="nx">object</span> <span class="nx">you</span> <span class="nx">like</span><span class="p">,</span> <span class="nx">can</span> <span class="nx">be</span> <span class="nx">attached</span> <span class="nx">to</span> <span class="nx">graphs</span><span class="p">,</span> <span class="nx">nodes</span><span class="p">,</span> <span class="nx">or</span> <span class="nx">edges</span><span class="p">.</span>
+<span class="err">#</span> <span class="err">可以把任意对象附在</span><span class="nx">graph</span> <span class="nx">nodes</span> <span class="err">或</span> <span class="nx">edges</span><span class="err">上</span>
+<span class="nx">G</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">Graph</span><span class="p">(</span><span class="nx">day</span><span class="o">=</span><span class="s2">&quot;Friday&quot;</span><span class="p">)</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">graph</span><span class="cp">[</span><span class="s1">&#39;day&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="s1">&#39;Monday&#39;</span>
+
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_node</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">time</span><span class="o">=</span><span class="s1">&#39;5pm&#39;</span><span class="p">)</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_nodes_from</span><span class="p">(</span><span class="cp">[</span><span class="mi">3</span><span class="cp">]</span><span class="p">,</span> <span class="nx">time</span><span class="o">=</span><span class="s1">&#39;2pm&#39;</span><span class="p">)</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">node</span><span class="cp">[</span><span class="mi">1</span><span class="cp">]</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">node</span><span class="cp">[</span><span class="mi">1</span><span class="cp">][</span><span class="s1">&#39;room&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="mi">714</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">nodes</span><span class="p">(</span><span class="nx">data</span><span class="o">=</span><span class="nx">True</span><span class="p">)</span>
+
+
+<span class="err">#</span> <span class="err">以下这些函数，一定是</span>  <span class="nx">function_name</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span><span class="nx">attr_dict</span><span class="o">=</span><span class="nx">None</span><span class="p">,</span> <span class="o">**</span><span class="nx">attr</span><span class="p">)</span><span class="err">这样定义的</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_edge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">weight</span><span class="o">=</span><span class="mf">4.7</span><span class="p">)</span>   
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_edges_from</span><span class="p">(</span><span class="cp">[</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span><span class="cp">]</span><span class="p">,</span> <span class="nx">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_edges_from</span><span class="p">(</span><span class="cp">[</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span><span class="s1">&#39;blue&#39;</span><span class="p">}),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;weight&#39;</span><span class="p">:</span><span class="mi">8</span><span class="p">})</span><span class="cp">]</span><span class="p">)</span>
+<span class="nx">G</span><span class="cp">[</span><span class="mi">1</span><span class="cp">][</span><span class="mi">2</span><span class="cp">][</span><span class="s1">&#39;weight&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="mf">4.7</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">edge</span><span class="cp">[</span><span class="mi">1</span><span class="cp">][</span><span class="mi">2</span><span class="cp">][</span><span class="s1">&#39;weight&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="mi">4</span>
+
+
+<span class="err">#</span> <span class="err">有向图</span>
+<span class="nx">DG</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">DiGraph</span><span class="p">()</span>
+<span class="nx">DG</span><span class="p">.</span><span class="nx">add_weighted_edges_from</span><span class="p">(</span><span class="cp">[</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">)</span><span class="cp">]</span><span class="p">)</span>
+<span class="nx">DG</span><span class="p">.</span><span class="nx">out_degree</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">weight</span><span class="o">=</span><span class="s1">&#39;weight&#39;</span><span class="p">)</span>  <span class="err">#</span> <span class="err">怎么实现的呢</span>
+<span class="nx">DG</span><span class="p">.</span><span class="nx">degree</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">weight</span><span class="o">=</span><span class="s1">&#39;weight&#39;</span><span class="p">)</span>  <span class="err">#</span> <span class="err">怎么实现的呢</span>
+<span class="nx">DG</span><span class="p">.</span><span class="nx">successors</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="err">#</span> <span class="err">后继结点，怎么实现的呢</span>
+<span class="nx">DG</span><span class="p">.</span><span class="nx">neighbors</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="err">#</span> <span class="err">邻居节点</span> <span class="err">，怎么实现的呢</span>
+
+<span class="err">#</span> <span class="err">转换为无向图</span>
+<span class="nx">G</span> <span class="o">=</span> <span class="nx">DG</span><span class="p">.</span><span class="nx">to_undirected</span><span class="p">()</span>
+<span class="nx">G</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">Graph</span><span class="p">(</span><span class="nx">DG</span><span class="p">)</span>
+
+
+<span class="err">#</span> <span class="nx">multigraph</span><span class="err">，允许两节点间存在多条边。注意，像最短路径这样的算法，在多边图上会失效</span>
+<span class="nx">MG</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">MultiGraph</span><span class="p">()</span>
+<span class="nx">MG</span><span class="p">.</span><span class="nx">add_weighted_edges_from</span><span class="p">(</span><span class="cp">[</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">.5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">.75</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">.5</span><span class="p">)</span><span class="cp">]</span><span class="p">)</span>
+<span class="err">#</span> <span class="nx">plot</span>
+
+<span class="nx">print</span> <span class="nx">MG</span><span class="p">.</span><span class="nx">degree</span><span class="p">(</span><span class="nx">weight</span><span class="o">=</span><span class="s1">&#39;weight&#39;</span><span class="p">)</span>  <span class="err">#</span> <span class="err">算连接此节点所有</span><span class="nx">weight</span><span class="err">之和</span>
+<span class="nx">GG</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">Graph</span><span class="p">()</span>
+<span class="k">for</span> <span class="nx">n</span><span class="p">,</span> <span class="nx">nbrs</span> <span class="k">in</span> <span class="nx">MG</span><span class="p">.</span><span class="nx">adjacency_iter</span><span class="p">()</span><span class="o">:</span>  <span class="err">#</span> <span class="err">每个点和每个点相邻的点的边，如果是多边，则还有</span>
+<span class="k">for</span> <span class="nx">nbr</span><span class="p">,</span> <span class="nx">edict</span> <span class="k">in</span> <span class="nx">nbrs</span><span class="p">.</span><span class="nx">items</span><span class="p">()</span><span class="o">:</span>  <span class="err">#</span> <span class="err">返回每个点和与</span><span class="nx">n</span><span class="err">的边的</span><span class="nx">dict</span><span class="err">（多边）</span>
+<span class="nx">minvalue</span> <span class="o">=</span> <span class="nx">min</span><span class="p">(</span><span class="cp">[</span><span class="nb">d</span><span class="err">[</span><span class="s1">&#39;weight&#39;</span><span class="cp">]</span> <span class="k">for</span> <span class="nx">d</span> <span class="k">in</span> <span class="nx">edict</span><span class="p">.</span><span class="nx">values</span><span class="p">()])</span>  <span class="err">#</span> <span class="err">找到最小的那个权</span>
+<span class="nx">GG</span><span class="p">.</span><span class="nx">add_edge</span><span class="p">(</span><span class="nx">n</span><span class="p">,</span> <span class="nx">nbr</span><span class="p">,</span> <span class="nx">weight</span><span class="o">=</span><span class="nx">minvalue</span><span class="p">)</span>  <span class="err">#</span> <span class="err">加入到</span><span class="nx">GG</span><span class="err">里</span>
+<span class="nx">print</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">shortest_path</span><span class="p">(</span><span class="nx">GG</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="err">#</span> <span class="err">怎么实现的呢</span>
+
+<span class="nx">G1</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">Graph</span><span class="p">()</span>
+<span class="nx">G2</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">Graph</span><span class="p">()</span>
+<span class="nx">nbunch</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">path_graph</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="nx">nx</span><span class="p">.</span><span class="nx">subgraph</span><span class="p">(</span><span class="nx">G</span><span class="p">,</span> <span class="nx">nbunch</span><span class="p">)</span>  <span class="err">#</span> <span class="nx">induce</span> <span class="nx">subgraph</span> <span class="nx">of</span> <span class="nx">G</span> <span class="nx">on</span> <span class="nx">nodes</span> <span class="k">in</span> <span class="nx">nbunch</span><span class="p">,</span> <span class="err">从</span><span class="nx">G</span><span class="err">中找到</span><span class="nx">nbunch</span><span class="err">中节点所涉及到的子图</span>
+<span class="nx">nx</span><span class="p">.</span><span class="nx">union</span><span class="p">(</span><span class="nx">G1</span><span class="p">,</span> <span class="nx">G2</span><span class="p">)</span>  <span class="err">#</span> <span class="nx">graph</span> <span class="nx">union</span><span class="err">，合并图，</span><span class="nx">G1</span><span class="err">和</span><span class="nx">G2</span><span class="err">必须是没有交集的</span>
+<span class="nx">nx</span><span class="p">.</span><span class="nx">disjoint_union</span><span class="p">(</span><span class="nx">G1</span><span class="p">,</span> <span class="nx">G2</span><span class="p">)</span>  <span class="err">#</span> <span class="nx">graph</span> <span class="nx">union</span> <span class="nx">assuming</span> <span class="nx">all</span> <span class="nx">nodes</span> <span class="nx">are</span> <span class="nx">different</span><span class="err">，合并图，认为两个图中的节点都不同，会强制将节点转换成</span><span class="kr">int</span>
+<span class="nx">nx</span><span class="p">.</span><span class="nx">cartesian_product</span><span class="p">(</span><span class="nx">G1</span><span class="p">,</span> <span class="nx">G2</span><span class="p">)</span>  <span class="err">#</span> <span class="k">return</span> <span class="nx">Cartesian</span> <span class="nx">product</span> <span class="nx">graph</span> <span class="err">笛卡尔积</span>
+<span class="nx">nx</span><span class="p">.</span><span class="nx">compose</span><span class="p">(</span><span class="nx">G1</span><span class="p">,</span> <span class="nx">G2</span><span class="p">)</span>  <span class="err">#</span> <span class="nx">combine</span> <span class="nx">graphs</span> <span class="nx">identifying</span> <span class="nx">nodes</span> <span class="nx">common</span> <span class="nx">to</span> <span class="nx">both</span><span class="err">，将两个有交集的图</span><span class="nx">G1</span><span class="err">和</span><span class="nx">G2</span><span class="err">合并</span>
+<span class="nx">nx</span><span class="p">.</span><span class="nx">complement</span><span class="p">(</span><span class="nx">G</span><span class="p">)</span>  <span class="err">#</span> <span class="nx">graph</span> <span class="nx">complement</span><span class="p">,</span> <span class="err">返回补图</span>
+<span class="nx">nx</span><span class="p">.</span><span class="nx">create_empty_copy</span><span class="p">(</span><span class="nx">G</span><span class="p">)</span>  <span class="err">#</span> <span class="k">return</span> <span class="nx">an</span> <span class="nx">empty</span> <span class="nx">copy</span> <span class="nx">of</span> <span class="nx">the</span> <span class="nx">same</span> <span class="nx">graph</span> <span class="kr">class</span><span class="err">，</span> <span class="err">返回一个空的同类型网络（有向，无向，</span><span class="nx">multi</span><span class="err">）</span>
+<span class="nx">convert_to_undirected</span><span class="p">(</span><span class="nx">G</span><span class="p">)</span>  <span class="err">#</span> <span class="k">return</span> <span class="nx">an</span> <span class="nx">undirected</span> <span class="nx">representation</span> <span class="nx">of</span> <span class="nx">G</span>
+<span class="nx">convert_to_directed</span><span class="p">(</span><span class="nx">G</span><span class="p">)</span>  <span class="err">#</span> <span class="k">return</span> <span class="nx">a</span> <span class="nx">directed</span> <span class="nx">representation</span> <span class="nx">of</span> <span class="nx">G</span>
+
+
+<span class="err">#</span> <span class="err">经典图</span>
+<span class="nx">petersen</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">petersen_graph</span><span class="p">()</span>
+<span class="nx">tutte</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">tutte_graph</span><span class="p">()</span>
+<span class="nx">maze</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">sedgewick_maze_graph</span><span class="p">()</span>
+<span class="nx">tet</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">tetrahedral_graph</span><span class="p">()</span>
+<span class="nx">K_5</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">complete_graph</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nx">K_3_5</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">complete_bipartite_graph</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="nx">barbell</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">barbell_graph</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="nx">lollipop</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">lollipop_graph</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="err">#</span> <span class="err">随机图</span>
+<span class="nx">er</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">erdos_renyi_graph</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">)</span>
+<span class="nx">ws</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">watts_strogatz_graph</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="nx">ba</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">barabasi_albert_graph</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="nx">red</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">random_lobster</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
+
+<span class="err">#</span> <span class="err">文件操作</span>
+<span class="nx">nx</span><span class="p">.</span><span class="nx">write_gml</span><span class="p">(</span><span class="nx">red</span><span class="p">,</span> <span class="s2">&quot;path.to.file&quot;</span><span class="p">)</span>
+<span class="nx">mygraph</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">read_gml</span><span class="p">(</span><span class="s2">&quot;path.to.file&quot;</span><span class="p">)</span>
+
+<span class="err">#</span> <span class="err">对图的分析</span>
+<span class="nx">G</span> <span class="o">=</span> <span class="nx">nx</span><span class="p">.</span><span class="nx">Graph</span><span class="p">()</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_edges_from</span><span class="p">(</span><span class="cp">[</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="cp">]</span><span class="p">)</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">add_node</span><span class="p">(</span><span class="s2">&quot;spam&quot;</span><span class="p">)</span>  <span class="err">#</span> <span class="nx">adds</span> <span class="nx">node</span> <span class="s2">&quot;spam&quot;</span>
+<span class="nx">nx</span><span class="p">.</span><span class="nx">connected_components</span><span class="p">(</span><span class="nx">G</span><span class="p">)</span>  <span class="err">#</span> <span class="err">发现连通子图</span>
+<span class="nx">sorted</span><span class="p">(</span><span class="nx">nx</span><span class="p">.</span><span class="nx">degree</span><span class="p">(</span><span class="nx">G</span><span class="p">).</span><span class="nx">values</span><span class="p">())</span>  <span class="err">#</span> <span class="err">排序</span>
+<span class="nx">nx</span><span class="p">.</span><span class="nx">clustering</span><span class="p">(</span><span class="nx">G</span><span class="p">)</span>  <span class="err">#</span> <span class="err">簇</span>
+<span class="nx">nx</span><span class="p">.</span><span class="nx">degree</span><span class="p">(</span><span class="nx">G</span><span class="p">)</span>  <span class="err">#</span> <span class="err">图的度，怎么做的？</span>
+<span class="nx">nx</span><span class="p">.</span><span class="nx">degree</span><span class="p">(</span><span class="nx">G</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="err">#</span> <span class="err">点</span><span class="mi">1</span><span class="err">的度，怎么做的？</span>
+<span class="nx">G</span><span class="p">.</span><span class="nx">degree</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="err">#</span> <span class="err">点</span><span class="mi">1</span><span class="err">的读，怎么做的？</span>
+
+
+<span class="nx">nx</span><span class="p">.</span><span class="nx">draw</span><span class="p">(</span><span class="nx">G</span><span class="p">)</span>  <span class="err">#</span> <span class="err">画图</span>
+<span class="nx">nx</span><span class="p">.</span><span class="nx">draw_random</span><span class="p">(</span><span class="nx">G</span><span class="p">)</span>  <span class="err">#</span> <span class="err">随机画</span>
+<span class="nx">nx</span><span class="p">.</span><span class="nx">draw_circular</span><span class="p">(</span><span class="nx">G</span><span class="p">)</span>  <span class="err">#</span> <span class="err">用圆形画</span>
+<span class="nx">nx</span><span class="p">.</span><span class="nx">draw_spectral</span><span class="p">(</span><span class="nx">G</span><span class="p">)</span>  <span class="err">#</span> <span class="err">用图谱画</span>
+
+
+
+<span class="nx">nx</span><span class="p">.</span><span class="nx">draw</span><span class="p">(</span><span class="nx">GG</span><span class="p">)</span>
+<span class="nx">plt</span><span class="p">.</span><span class="nx">show</span><span class="p">()</span>
+<span class="nx">plt</span><span class="p">.</span><span class="nx">savefig</span><span class="p">(</span><span class="s2">&quot;path.png&quot;</span><span class="p">)</span>  <span class="err">#</span> <span class="err">保存图片</span>
+
+<span class="nx">nx</span><span class="p">.</span><span class="nx">draw_graphviz</span><span class="p">(</span><span class="nx">G</span><span class="p">)</span>  <span class="err">#</span> <span class="err">用</span><span class="nx">graphviz</span><span class="err">画，需要</span><span class="nx">GraphViz</span><span class="err">和</span><span class="nx">PyGraphviz</span>
+<span class="nx">nx</span><span class="p">.</span><span class="nx">write_dot</span><span class="p">(</span><span class="nx">G</span><span class="p">,</span> <span class="s1">&#39;file.dot&#39;</span><span class="p">)</span>  <span class="err">#</span> <span class="err">用</span><span class="nx">dot</span><span class="err">画，需要</span><span class="nx">PyDot</span><span class="err">支持</span>
+</pre></div>
+
+
+<h1>NetworkX底层实现</h1>
+<p>NetworkX的底层用了很多dictionary，看完了教程之后觉得有很多地方可以优化，因此追究了一下部分方法的底层实现。
+NetworkX中的graph是由多个dictionary实现的，当创建一个Graph类时，会对应初始化</p>
+<div class="highlight"><pre><span class="n">self</span><span class="p">.</span><span class="n">graph</span> <span class="o">=</span> <span class="p">{}</span>   <span class="err">#</span> <span class="n">dictionary</span> <span class="k">for</span> <span class="n">graph</span> <span class="n">attributes</span>
+<span class="n">self</span><span class="p">.</span><span class="n">node</span> <span class="o">=</span> <span class="p">{}</span><span class="err">#</span> <span class="n">empty</span> <span class="n">node</span> <span class="n">dict</span> <span class="p">(</span><span class="n">created</span> <span class="n">before</span> <span class="n">convert</span><span class="p">)</span>
+<span class="n">self</span><span class="p">.</span><span class="n">adj</span> <span class="o">=</span> <span class="p">{}</span> <span class="err">#</span> <span class="n">empty</span> <span class="n">adjacency</span> <span class="n">dict</span>
+<span class="n">self</span><span class="p">.</span><span class="n">edge</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">adj</span>
+</pre></div>
+
+
+<ol>
+<li>当返回node或者是edge的iteration的时候，实际上是返回相应词典的itemiter <code>return iter(self.node.items())</code>。</li>
+<li>当调用<code>neighbors()</code>，<code>successors()</code>，<code>predecessors()</code>，这一类寻找相邻节点的方法时，实际上就是用的dictionary的查询，因此，可以认为，寻找相邻节点时采用的是hash的方法，因为<a href="http://www.laurentluce.com/posts/python-dictionary-implementation/">dictionary的查询用的是hash</a> [3]。</li>
+<li>一个节点的度，以无向图的neighbors为例，实际上是算的neighbor的数量：<code>yield (n,len(nbrs)+(n in nbrs)) # return tuple (n,degree)</code>，即nbrs的数量，外加当前节点是否在neighbor里（应该是考虑有自己指向自己的可能）。</li>
+<li>最短路径<code>shortest_path</code>用的是<a href="http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">Dijkstra算法</a>。</li>
+</ol>
+<h1>基于词同现的language network</h1>
+<p>思路：由于论文中的网络仅仅在相邻词之间作边，但实际中有些词语搭配是跨词的，因此设置了span。从文本中读取句子，对于每个句子，以当前词为中心，以span为半径(为了能看清，代码中暂取span=2)内的词与当前词都作边。代码如下：
+    # coding:utf8
+    '''
+    Created on 2015年1月27日</p>
+<div class="highlight"><pre><span class="err">@</span><span class="n">author</span><span class="o">:</span> <span class="n">James</span>
+<span class="err">&#39;&#39;&#39;</span>
+
+<span class="n">import</span> <span class="n">networkx</span> <span class="n">as</span> <span class="n">nx</span>
+<span class="n">import</span> <span class="n">matplotlib</span><span class="p">.</span><span class="n">pyplot</span> <span class="n">as</span> <span class="n">plt</span>
+<span class="n">from</span> <span class="n">config</span><span class="p">.</span><span class="n">params</span> <span class="n">import</span> <span class="n">fiveCopusppisentences</span>
+<span class="n">from</span> <span class="n">pylab</span> <span class="n">import</span> <span class="o">*</span>  
+<span class="n">mpl</span><span class="p">.</span><span class="n">rcParams</span><span class="p">[</span><span class="err">&#39;</span><span class="n">font</span><span class="p">.</span><span class="n">sans</span><span class="o">-</span><span class="n">serif</span><span class="err">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="err">&#39;</span><span class="n">SimHei</span><span class="err">&#39;</span><span class="p">]</span> <span class="err">#指定默认字体</span>  
+<span class="n">mpl</span><span class="p">.</span><span class="n">rcParams</span><span class="p">[</span><span class="err">&#39;</span><span class="n">axes</span><span class="p">.</span><span class="n">unicode_minus</span><span class="err">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">False</span> <span class="err">#解决保存图像是负号</span><span class="sc">&#39;-&#39;</span><span class="err">显示为方块的问题</span>  
+<span class="n">def</span> <span class="n">add_sentence</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">sentence</span><span class="p">,</span> <span class="n">span</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">:</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">len</span><span class="p">(</span><span class="n">sentence</span><span class="p">))</span><span class="o">:</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="o">-</span><span class="n">span</span><span class="p">),</span> <span class="n">i</span><span class="p">)</span><span class="o">:</span>
+            <span class="n">graph</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">sentence</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">sentence</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">min</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="n">span</span><span class="p">,</span> <span class="n">len</span><span class="p">(</span><span class="n">sentence</span><span class="p">)))</span><span class="o">:</span>
+            <span class="n">graph</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">sentence</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sentence</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+
+<span class="n">def</span> <span class="n">get_coocurrence_network</span><span class="p">(</span><span class="n">corpus</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="p">.</span><span class="n">DiGraph</span><span class="p">()</span>
+    <span class="err">#</span> <span class="mi">1</span> <span class="n">sentence</span> <span class="n">per</span> <span class="n">line</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="n">in</span> <span class="n">open</span><span class="p">(</span><span class="n">corpus</span><span class="p">)</span><span class="o">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="p">]</span>
+        <span class="n">sentence</span> <span class="o">=</span> <span class="n">line</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="sc">&#39; &#39;</span><span class="p">)</span>
+        <span class="n">add_sentence</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">sentence</span><span class="p">)</span>
+    <span class="n">print</span> <span class="err">&#39;</span><span class="n">load</span> <span class="n">file</span> <span class="n">done</span><span class="err">&#39;</span>
+    <span class="k">return</span> <span class="n">G</span>
+
+<span class="n">def</span> <span class="n">draw_node</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">sub_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="p">.</span><span class="n">DiGraph</span><span class="p">(</span><span class="n">G</span><span class="p">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">G</span><span class="p">.</span><span class="n">successors</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">+</span> <span class="n">G</span><span class="p">.</span><span class="n">predecessors</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">node</span><span class="p">]))</span>
+    <span class="k">for</span> <span class="n">word</span> <span class="n">in</span> <span class="n">sub_graph</span><span class="p">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">:</span>
+        <span class="n">print</span> <span class="n">word</span>
+    <span class="n">nx</span><span class="p">.</span><span class="n">draw_networkx</span><span class="p">(</span><span class="n">sub_graph</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+
+<span class="n">def</span> <span class="n">show_word_network</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">get_coocurrence_network</span><span class="p">(</span><span class="n">corpus</span><span class="p">)</span>
+    <span class="err">#</span> <span class="n">nx</span><span class="p">.</span><span class="n">draw_circular</span><span class="p">(</span><span class="n">G</span><span class="p">)</span> 
+    <span class="n">draw_node</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">show_word_network</span><span class="p">(</span><span class="err">&#39;</span><span class="n">D</span><span class="o">:/</span><span class="n">downloads</span><span class="o">/</span><span class="n">banfa</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;办法</span><span class="o">/</span><span class="n">COM</span><span class="o">-</span><span class="n">NOUN</span><span class="err">&#39;</span><span class="p">)</span>
+<span class="n">show_word_network</span><span class="p">(</span><span class="n">fiveCopusppisentences</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">time</span><span class="err">&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<h1>效果图</h1>
+<p>中文词网络示例，以“办法”为例：
+<img alt="" src="http://i.imgur.com/WTIvKKJ.png" />
+英文词网络示例，以“time”为例：
+<img alt="" src="http://i.imgur.com/FPxS3i4.png" /></p>
+<h1>bonus</h1>
+<p>微博中发的那张图源码</p>
+<div class="highlight"><pre><span class="n">import</span> <span class="n">networkx</span> <span class="n">as</span> <span class="n">nx</span>
+<span class="n">import</span> <span class="n">matplotlib</span><span class="p">.</span><span class="n">pyplot</span> <span class="n">as</span> <span class="n">plt</span>
+
+<span class="n">def</span> <span class="n">circle</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">32</span><span class="p">)</span><span class="o">:</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="p">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">:</span>
+<span class="k">for</span> <span class="n">j</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">:</span>
+<span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">j</span><span class="o">:</span>
+<span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+<span class="n">nx</span><span class="p">.</span><span class="n">draw_circular</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">circle</span><span class="p">()</span>
+</pre></div>
+
+
+<p><img alt="" src="http://i.imgur.com/C3ubDiG.png" /></p>
+<h1>参考文献</h1>
+<p>[1] Solé, R. V, Corominas-Murtra, B., Valverde, S. and Steels, L. 2005. Language Networks : Their Structure, Function and Evolution. Trends in Cognitive Sciences. (2005).</br>
+[2] <a href="http://networkx.github.io/documentation/latest/tutorial/tutorial.html#drawing-graphs">NetworkX tutoral</a>
+[3] <a href="http://www.laurentluce.com/posts/python-dictionary-implementation/">Python dictionary implementation</a></p>
+  </div>
+
+
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'zchaosblog';
+        var disqus_identifier = "pythonshi-xian-de-language-network.html";
+        var disqus_title = "Python实现的language network";
+        var disqus_url = "http://www.chaoslog.com/pythonshi-xian-de-language-network.html";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus</a>.</noscript>
+    </div>
+
+          </div>
+
+            <div class="span3">
+  <div class="well">
+
+    <p><abbr class="fa fa-calendar" title="2015-01-23T00:00:00+08:00"> 2015-01-23</abbr></p>
+
+      <p><address class="fa fa-user"> By <a href="http://www.chaoslog.com/author/chao-james.html" rel="author">超(James)</a></address></p>
+
+
+    <hr/>
+
+      <p>
+              <a href="http://www.chaoslog.com/category/linguistic-graph-python.html" rel="tag tooltip" class="label label-info" data-placement="right" data-original-title="1 article in this category">Linguistic, graph, python</a>
+            <a href="/tag/language-network.html" rel="tooltip" class="label" data-placement="right" data-original-title="2 articles with this tag">language network</a>
+            <a href="/tag/complex-network.html" rel="tooltip" class="label" data-placement="right" data-original-title="2 articles with this tag">complex network</a>
+            <a href="/tag/networkx.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">NetworkX</a>
+            <a href="/tag/python.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">python</a>
+            <a href="/tag/graph.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">graph</a>
+      </p>
+      <hr/>
+
+
+
+  </div>
+              
+            </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- TODO: make footer sticky -->
+    <footer class="container-fluid">
+      <div class="container">
+        <div class="row">
+
+            <div class="span2">
+                <h5>Social</h5>
+                <ul class="unstyled">
+                  <li>  <a href="http://weibo.com/271421133">
+      <img src="http://g.etfv.co/http://weibo.com?defaulticon=lightpng" width="16" height="16" class="icon" alt="weibo.com icon"/>
+    微博
+  </a></li>
+                  <li>  <a href="https://twitter.com/kukumayas">
+      <i class="fa fa-twitter"></i>
+    twitter
+  </a></li>
+                  <li>  <a href="https://www.linkedin.com/in/kukumayas">
+      <img src="http://g.etfv.co/http://www.linkedin.com?defaulticon=lightpng" width="16" height="16" class="icon" alt="www.linkedin.com icon"/>
+    linkedin
+  </a></li>
+                  <li>  <a href="https://github.com/kukumayas">
+      <i class="fa fa-github"></i>
+    github
+  </a></li>
+                </ul>
+            </div>
+            <div class="span2">
+            </div>
+
+          <div class="span2">
+            <h5>Browse content by</h5>
+            <ul class="fa-ul">
+
+            </ul>
+          </div>
+
+          <div class="span2 muted">
+            <h5>Copyright notice</h5>
+            <p>© Copyright 2014-2015 超(James).</p>
+          </div>
+
+          <div class="span2 muted">
+            <h5>Disclaimer</h5>
+              <p>All opinions expressed in this site are my own personal opinions and are not endorsed by, nor do they represent the opinions of my previous, current and future employers or any of its affiliates, partners or customers.</p>
+          </div>
+
+          <div class="span2">
+            <h5 class="pull-right"><a href="#" class="fa fa-arrow-up"> Back to top</a></h5>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="row span12 muted text-center">
+          Site generated by <a href="http://getpelican.com"> Pelican</a>.<br/>
+          <a href="https://github.com/kdeldycke/plumage"> Plumage</a> theme by <a href="http://kevin.deldycke.com">Kevin Deldycke</a>.
+        </div>
+      </div>
+
+    </footer>
+
+    <script src="//code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="//cdn.jsdelivr.net/jquery.magnific-popup/0.9.9/jquery.magnific-popup.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script src="http://www.chaoslog.com/theme/js/jquery.mglass.js"></script>
+    <script src="http://www.chaoslog.com/theme/js/application.js"></script>
+
+  </body>
+</html>
