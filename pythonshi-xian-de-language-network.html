@@ -339,13 +339,13 @@ NetworkX中的graph是由多个dictionary实现的，当创建一个Graph类时�
 <span class="n">import</span> <span class="n">matplotlib</span><span class="p">.</span><span class="n">pyplot</span> <span class="n">as</span> <span class="n">plt</span>
 
 <span class="n">def</span> <span class="n">circle</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">32</span><span class="p">)</span><span class="o">:</span>
-<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="p">.</span><span class="n">Graph</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">i</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">:</span>
-<span class="k">for</span> <span class="n">j</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">:</span>
-<span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">j</span><span class="o">:</span>
-<span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
-<span class="n">nx</span><span class="p">.</span><span class="n">draw_circular</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
-<span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="p">.</span><span class="n">Graph</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">:</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">j</span><span class="o">:</span>
+                <span class="n">G</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+    <span class="n">nx</span><span class="p">.</span><span class="n">draw_circular</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
 
 <span class="n">circle</span><span class="p">()</span>
 </pre></div>
@@ -354,7 +354,7 @@ NetworkX中的graph是由多个dictionary实现的，当创建一个Graph类时�
 <p><img alt="" src="http://i.imgur.com/C3ubDiG.png" /></p>
 <h1>参考文献</h1>
 <p>[1] Solé, R. V, Corominas-Murtra, B., Valverde, S. and Steels, L. 2005. Language Networks : Their Structure, Function and Evolution. Trends in Cognitive Sciences. (2005).</br>
-[2] <a href="http://networkx.github.io/documentation/latest/tutorial/tutorial.html#drawing-graphs">NetworkX tutoral</a>
+[2] <a href="http://networkx.github.io/documentation/latest/tutorial/tutorial.html#drawing-graphs">NetworkX tutoral</a></br>
 [3] <a href="http://www.laurentluce.com/posts/python-dictionary-implementation/">Python dictionary implementation</a></p>
   </div>
 
@@ -392,8 +392,8 @@ NetworkX中的graph是由多个dictionary实现的，当创建一个Graph类时�
             <a href="/tag/language-network.html" rel="tooltip" class="label" data-placement="right" data-original-title="2 articles with this tag">language network</a>
             <a href="/tag/complex-network.html" rel="tooltip" class="label" data-placement="right" data-original-title="2 articles with this tag">complex network</a>
             <a href="/tag/networkx.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">NetworkX</a>
-            <a href="/tag/python.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">python</a>
             <a href="/tag/graph.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">graph</a>
+            <a href="/tag/python.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">python</a>
       </p>
       <hr/>
 

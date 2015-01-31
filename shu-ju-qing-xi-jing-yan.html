@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zhs">
+  <head>
+    <meta charset="utf-8"/>
+
+    <title>  数据清洗经验
+ | Chaoslog</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="author" content=""/>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css"/>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/jquery.magnific-popup/0.9.9/magnific-popup.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/jquery.mglass.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/pygment-solarized-dark.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/style.css"/>
+
+    <!-- Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+    <link href='//fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'/>
+    <link href='//fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'/>
+
+
+    <link rel="icon" href="http://www.chaoslog.com/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="http://www.chaoslog.com/favicon.ico" type="image/x-icon">
+
+    <!-- Feeds -->
+
+
+  </head>
+
+  <body>
+    <div class="container">
+
+      <header>
+        <div class="page-header">
+          <h1><a href="http://www.chaoslog.com">Chaoslog</a> <small></small></h1>
+        </div>
+
+        <div class="navbar">
+          <div class="navbar-inner">
+            <a class="brand" href="http://www.chaoslog.com" title="">Chaoslog</a>
+            <ul class="nav">
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <section>
+
+        <div class="row">
+          <div class=" span9  ">
+  <h1>
+    <a href="http://www.chaoslog.com/shu-ju-qing-xi-jing-yan.html" rel="bookmark" title="Permalink to 数据清洗经验">数据清洗经验</a>
+  </h1>
+          </div>
+        </div>
+
+        <div class="row">
+
+
+          <div class=" span9 " id="content" role="main">
+  
+
+  <div>
+    <p>平时习惯了在某些特定的数据集合上做实验，简单的tokenization、预处理等步骤就足够了。但是在数据越来越大的年代，数据清洗越来越重要，也越来越复杂。看到Philip J.Guo 的这篇英文文章<a href="http://pgbovine.net/parsing-raw-data.htm">Parsing Raw Data</a>觉得不错，学习并译成中文，难免谬误，仅供参考。</p>
+<h1>前言</h1>
+<p>科研工作者、工程师、业务分析者这些和数据打交道的职业，数据分析在他们工作中是一项核心任务。这么不仅仅针对“大数据”的从业者，即使你笔记本硬盘上的数据也值得分析。</br>
+数据分析的第一步是洗数据，原始数据可能有各种不同的来源，包括：</p>
+<ol>
+<li>Web服务器的日志</li>
+<li>某种科学仪器的输出结果</li>
+<li>在线调查问卷的导出结果</li>
+<li>1970s的政府数据</li>
+<li>企业顾问准备的报告</li>
+</ol>
+<p>这些来源的共同点是：你绝对料想不到他们的各种怪异的格式。数据给你了，那就要处理，但这些数据可能经常是：</p>
+<ol>
+<li>不完整的（某些记录的某些字段缺失）</li>
+<li>前后不一致（字段名和结构前后不一）</li>
+<li>数据损坏（有些记录可能会因为种种原因被破坏）</li>
+</ol>
+<p>因此，你必须经常维护你的清洗程序来清洗这些原始数据，把他们转化成易于分析的格式，通常称为<a href="http://pgbovine.net/why-wrangle-data.htm">data wrangling</a>。接下来会介绍一些关于如何有效清洗数据，所有介绍的内容都可以由任意编程语言实现。</p>
+<h1>使用断言</h1>
+<p>这是最重要的一点经验：使用断言(<a href="http://pgbovine.net/assertions-debugging-testing-lecture.htm">Assertions</a>)揪出代码中的bug。用断言的形式写下你对代码格式的假设，如果一旦发现有数据跟你的断言相悖，就修改这些断言。</br>
+记录是有序的？如果是，断言之！每一条记录都是有7个字段么？如果是，断言之。每一个字段都是0-26之间的奇数么？如果是，断言之！总之，能断言的都断言！</br>
+在理想世界中，所有记录都应该是整整齐齐的格式，并且遵循某种简洁的内在结构。但是实际当中可不是这样。</br>
+写断言写到你眼出血，即便是出血还得再写。</br>
+洗数据的程序肯定会经常崩溃。这很好，因为每一次崩溃都意味着你这些糟糕的数据又跟你最初的假设相悖了。反复的改进你的断言直到能成功的走通。但一定要尽可能让他们保持严格，不要太宽松，要不然可能达不到你要的效果。最坏的情况不是程序走不通，而是走出来不是你要的结果。</p>
+<h1>不要默默的跳过记录</h1>
+<p>原始数据中有些记录是不完整或者损坏的，所以洗数据的程序只能跳过。默默的跳过这些记录不是最好的办法，因为你不知道什么数据遗漏了。因此，这样做更好:</p>
+<ol>
+<li>打印出warning提示信息，这样你就能够过后再去寻找什么地方出错了</li>
+<li>记录总共跳过了多少记录，成功清洗了多少记录。这样做能够让你对原始数据的质量有个大致的感觉，比如，如果只跳过了0.5%，这还说的过去。但是如果跳过了35%，那就该看看这些数据或者代码存在什么问题了。</li>
+</ol>
+<h1>使用Set或者Counter把变量的类别以及类别出现的频次存储起来</h1>
+<p>数据中经常有些字段是枚举类型的。例如，血型只能是A、B、AB或者O。用断言来限定血型只能是这4种之一虽然挺好，但是如果某个类别包含多种可能的值，尤其是当有的值你可能始料未及的话，就不能用断言了。这时候，采用<a href="https://docs.python.org/2/library/collections.html#collections.Counter">counter</a>这种数据结构来存储就会比较好用。这样做你就可以：</p>
+<ol>
+<li>对于某个类别，假如碰到了始料未及的新取值时，就能够打印一条消息提醒你一下。</li>
+<li>洗完数据之后供你反过头来检查。例如，假如有人把血型误填成C，那回过头来就能轻松发现了。</li>
+</ol>
+<h1>断点清洗</h1>
+<p>如果你有大量的原始数据需要清洗，要一次清洗完可能需要很久，有可能是5分钟，10分钟，一小时，甚至是几天。实际当中，经常在洗到一半的时候突然崩溃了。</br>
+假设你有100万条记录，你的清洗程序在第325392条因为某些异常崩溃了，你修改了这个bug，然后重新清洗，这样的话，程序就得重新从1清洗到325391，这是在做无用功。其实可以这么做：
+1. 让你的清洗程序打印出来当前在清洗第几条，这样，如果崩溃了，你就能知道处理到哪条时崩溃了。
+2. 让你的程序支持在断点处开始清洗，这样当重新清洗时，你就能从325392直接开始。重洗的代码有可能会再次崩溃，你只要再次修正bug然后从再次崩溃的记录开始就行了。</p>
+<p>当所有记录都清洗结束之后，再重新清洗一遍，因为后来修改bug后的代码可能会对之前的记录的清洗带来一些变化，两次清洗保证万无一失。但总的来说，设置断点能够节省很多时间，尤其是当你在debug的时候。</p>
+<h1>在一部分数据上进行测试</h1>
+<p>不要尝试一次性清洗所有数据。当你刚开始写清洗代码和debug的时候，在一个规模较小的子集上进行测试，然后扩大测试的这个子集再测试。这样做的目的是能够让你的清洗程序很快的完成测试集上的清洗，例如几秒，这样会节省你反复测试的时间。</br>
+但是要注意，这样做的话，用于测试的子集往往不能涵盖到一些奇葩记录，因为奇葩总是比较少见的嘛。</p>
+<h1>把清洗日志打印到文件中</h1>
+<p>当运行清洗程序时，把清洗日志和错误提示都打印到文件当中，这样就能轻松的使用文本编辑器来查看他们了。</p>
+<h1>可选：把原始数据一并存储下来</h1>
+<p>当你不用担心存储空间的时候这一条经验还是很有用的。这样做能够让原始数据作为一个字段保存在清洗后的数据当中，在清洗完之后，如果你发现哪条记录不对劲了，就能够直接看到原始数据长什么样子，方便你debug。</br>
+不过，这样做的坏处就是需要消耗双倍的存储空间，并且让某些清洗操作变得更慢。所以这一条只适用于效率允许的情况下。</p>
+<h1>最后一点，验证清洗后的数据</h1>
+<p>记得写一个验证程序来验证你清洗后得到的干净数据是否跟你预期的格式一致。你不能控制原始数据的格式，但是你能够控制干净数据的格式。所以，一定要确保干净数据的格式是符合你预期的格式的。</br>
+这一点其实是非常重要的，因为你完成了数据清洗之后，接下来就会直接在这些干净数据上进行下一步工作了。如非万不得已，你甚至再也不会碰那些原始数据了。因此，在你开始数据分析之前要确保数据是足够干净的。要不然的话，你可能会得到错误的分析结果，到那时候，就很难再发现很久之前的数据清洗过程中犯的错了。</p>
+  </div>
+
+
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'zchaosblog';
+        var disqus_identifier = "shu-ju-qing-xi-jing-yan.html";
+        var disqus_title = "数据清洗经验";
+        var disqus_url = "http://www.chaoslog.com/shu-ju-qing-xi-jing-yan.html";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus</a>.</noscript>
+    </div>
+
+          </div>
+
+            <div class="span3">
+  <div class="well">
+
+    <p><abbr class="fa fa-calendar" title="2015-01-31T00:00:00+08:00"> 2015-01-31</abbr></p>
+
+      <p><address class="fa fa-user"> By <a href="http://www.chaoslog.com/author/chao-james.html" rel="author">超(James)</a></address></p>
+
+
+    <hr/>
+
+      <p>
+              <a href="http://www.chaoslog.com/category/data-cleaning.html" rel="tag tooltip" class="label label-info" data-placement="right" data-original-title="1 article in this category">data cleaning</a>
+            <a href="/tag/shu-ju-wa-jue.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">数据挖掘</a>
+            <a href="/tag/data-cleaning.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">data cleaning</a>
+            <a href="/tag/shu-ju-qing-xi.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">数据清洗</a>
+            <a href="/tag/data-mining.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">data mining</a>
+      </p>
+      <hr/>
+
+
+
+  </div>
+              
+            </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- TODO: make footer sticky -->
+    <footer class="container-fluid">
+      <div class="container">
+        <div class="row">
+
+            <div class="span2">
+                <h5>Social</h5>
+                <ul class="unstyled">
+                  <li>  <a href="http://weibo.com/271421133">
+      <img src="http://g.etfv.co/http://weibo.com?defaulticon=lightpng" width="16" height="16" class="icon" alt="weibo.com icon"/>
+    微博
+  </a></li>
+                  <li>  <a href="https://twitter.com/kukumayas">
+      <i class="fa fa-twitter"></i>
+    twitter
+  </a></li>
+                  <li>  <a href="https://www.linkedin.com/in/kukumayas">
+      <img src="http://g.etfv.co/http://www.linkedin.com?defaulticon=lightpng" width="16" height="16" class="icon" alt="www.linkedin.com icon"/>
+    linkedin
+  </a></li>
+                  <li>  <a href="https://github.com/kukumayas">
+      <i class="fa fa-github"></i>
+    github
+  </a></li>
+                </ul>
+            </div>
+            <div class="span2">
+            </div>
+
+          <div class="span2">
+            <h5>Browse content by</h5>
+            <ul class="fa-ul">
+
+            </ul>
+          </div>
+
+          <div class="span2 muted">
+            <h5>Copyright notice</h5>
+            <p>© Copyright 2014-2015 超(James).</p>
+          </div>
+
+          <div class="span2 muted">
+            <h5>Disclaimer</h5>
+              <p>All opinions expressed in this site are my own personal opinions and are not endorsed by, nor do they represent the opinions of my previous, current and future employers or any of its affiliates, partners or customers.</p>
+          </div>
+
+          <div class="span2">
+            <h5 class="pull-right"><a href="#" class="fa fa-arrow-up"> Back to top</a></h5>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="row span12 muted text-center">
+          Site generated by <a href="http://getpelican.com"> Pelican</a>.<br/>
+          <a href="https://github.com/kdeldycke/plumage"> Plumage</a> theme by <a href="http://kevin.deldycke.com">Kevin Deldycke</a>.
+        </div>
+      </div>
+
+    </footer>
+
+    <script src="//code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="//cdn.jsdelivr.net/jquery.magnific-popup/0.9.9/jquery.magnific-popup.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script src="http://www.chaoslog.com/theme/js/jquery.mglass.js"></script>
+    <script src="http://www.chaoslog.com/theme/js/application.js"></script>
+
+  </body>
+</html>
