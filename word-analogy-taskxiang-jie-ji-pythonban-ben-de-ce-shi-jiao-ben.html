@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zhs">
+  <head>
+    <meta charset="utf-8"/>
+
+    <title>  word analogy task详解及python版本的测试脚本
+ | Chaoslog</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="author" content=""/>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css"/>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/jquery.magnific-popup/0.9.9/magnific-popup.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/jquery.mglass.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/pygment-solarized-dark.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/style.css"/>
+
+    <!-- Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+    <link href='//fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'/>
+    <link href='//fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'/>
+
+
+    <link rel="icon" href="http://www.chaoslog.com/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="http://www.chaoslog.com/favicon.ico" type="image/x-icon">
+
+    <!-- Feeds -->
+
+
+  </head>
+
+  <body>
+    <div class="container">
+
+      <header>
+        <div class="page-header">
+          <h1><a href="http://www.chaoslog.com">Chaoslog</a> <small></small></h1>
+        </div>
+
+        <div class="navbar">
+          <div class="navbar-inner">
+            <a class="brand" href="http://www.chaoslog.com" title="">Chaoslog</a>
+            <ul class="nav">
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <section>
+
+        <div class="row">
+          <div class=" span9  ">
+  <h1>
+    <a href="http://www.chaoslog.com/word-analogy-taskxiang-jie-ji-pythonban-ben-de-ce-shi-jiao-ben.html" rel="bookmark" title="Permalink to word analogy task详解及python版本的测试脚本">word analogy task详解及python版本的测试脚本</a>
+  </h1>
+          </div>
+        </div>
+
+        <div class="row">
+
+
+          <div class=" span9 " id="content" role="main">
+  
+
+  <div>
+    <h1>前言</h1>
+<p>Mikolov在[1]中为了大概测试训练出来的词向量的质量，设计了一套word analogy的测试方法。Word analogy的意思是类比，比如"king"-"queen" = "man" - "woman", "China" - "Beijing" = "U.K." - "London", "bird" - "birds" = "word" - "words"，这几个例子就能很好的说明word analogy的含义。（发表点个人看法：结果后来Socher、Levy、Pennington就抓着这个茬不放了，要在这个集合上跟人家比词向量的质量。这样测实际上是不规范的，读完代码就懂了，当词向量词典不一样的时候，结果其实不太公平。审稿人居然没有任何异议，也可能这个领域比较新，暂时也没什么好的测试方法吧。个人替Mikolov委屈）
+</p>
+为了便于测试，Mikolov整理了一个文件，里边有将近20000个的这种类比关系，称之为analogy-question，每一个question是一个四元组，比如king queen man woman；而根据这些question的含义可以分成14种，分别是</p>
+<div class="highlight"><pre><span class="n">capital</span><span class="o">-</span><span class="n">common</span><span class="o">-</span><span class="n">countries</span>  <span class="mi">506</span>
+<span class="n">capital</span><span class="o">-</span><span class="n">world</span> <span class="mi">3564</span>
+<span class="n">currency</span> <span class="mi">596</span>
+<span class="n">city</span><span class="o">-</span><span class="n">in</span><span class="o">-</span><span class="n">state</span> <span class="mi">2330</span>
+<span class="n">family</span> <span class="mi">420</span>
+<span class="n">gram1</span><span class="o">-</span><span class="n">adjective</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">adverb</span> <span class="mi">992</span>
+<span class="n">gram2</span><span class="o">-</span><span class="n">opposite</span> <span class="mi">756</span>
+<span class="n">gram3</span><span class="o">-</span><span class="n">comparative</span> <span class="mi">1332</span>
+<span class="n">gram4</span><span class="o">-</span><span class="n">superlative</span> <span class="mi">992</span>
+<span class="n">gram5</span><span class="o">-</span><span class="n">present</span><span class="o">-</span><span class="n">participle</span> <span class="mi">1056</span>
+<span class="n">gram6</span><span class="o">-</span><span class="n">nationality</span><span class="o">-</span><span class="n">adjective</span> <span class="mi">1521</span>
+<span class="n">gram7</span><span class="o">-</span><span class="n">past</span><span class="o">-</span><span class="n">tense</span> <span class="mi">1560</span>
+<span class="n">gram8</span><span class="o">-</span><span class="n">plural</span> <span class="mi">1332</span>
+<span class="n">gram9</span><span class="o">-</span><span class="n">plural</span><span class="o">-</span><span class="n">verbs</span> <span class="mi">870</span>
+</pre></div>
+
+
+<p>其中前5类属于语义（semantic），后9类属于句法（syntactic）。原文件<a href="https://word2vec.googlecode.com/svn/trunk/questions-words.txt">questions-words.txt</a>。</p>
+<h1>算法思想</h1>
+<p>那么，如何利用这些question来测试某个词向量呢？算法如下：</p>
+<ol>
+<li>读入词向量文件</li>
+<li>依次读入每一个question</li>
+<li>将每个question分解成四元组st0, st1, st2, st3</li>
+<li>根据词向量，算出v(expect)=v(st1)-v(st0)+v(st2)</li>
+<li>从词向量中挨个排的找出和v(expect)最接近的那个向量对应的词bestw（利用cosine相似度）</li>
+<li>如果bestw刚好是st3，恭喜</li>
+<li>跳转到2直到所有question被遍历完</li>
+</ol>
+<p>思想还是比较简单明了的，核心是4、5两步。</p>
+<h1>源代码注释</h1>
+<div class="highlight"><pre><span class="c1">//  Copyright 2013 Google Inc. All Rights Reserved.</span>
+<span class="c1">//</span>
+<span class="c1">//  Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1">//  you may not use this file except in compliance with the License.</span>
+<span class="c1">//  You may obtain a copy of the License at</span>
+<span class="c1">//</span>
+<span class="c1">//  http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">//</span>
+<span class="c1">//  Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1">//  distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1">//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1">//  See the License for the specific language governing permissions and</span>
+<span class="c1">//  limitations under the License.</span>
+
+<span class="p">#</span><span class="k">include</span> <span class="o">&lt;</span><span class="n">stdio</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;</span>
+<span class="p">#</span><span class="k">include</span> <span class="o">&lt;</span><span class="n">stdlib</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;</span>
+<span class="p">#</span><span class="k">include</span> <span class="o">&lt;</span><span class="k">string</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;</span>
+<span class="p">#</span><span class="k">include</span> <span class="o">&lt;</span><span class="n">math</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;</span>
+<span class="p">#</span><span class="k">include</span> <span class="o">&lt;</span><span class="n">malloc</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;</span>
+<span class="p">#</span><span class="k">include</span> <span class="o">&lt;</span><span class="n">ctype</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;</span>
+
+<span class="k">const</span> <span class="n">long</span> <span class="n">long</span> <span class="n">max_size</span> <span class="o">=</span> <span class="mh">2000</span><span class="p">;</span> <span class="c1">// max length of strings</span>
+<span class="k">const</span> <span class="n">long</span> <span class="n">long</span> <span class="no">N</span> <span class="o">=</span> <span class="mh">1</span><span class="p">;</span>   <span class="c1">// number of closest words</span>
+<span class="k">const</span> <span class="n">long</span> <span class="n">long</span> <span class="n">max_w</span> <span class="o">=</span> <span class="mh">50</span><span class="p">;</span>  <span class="c1">// max length of vocabulary entries</span>
+
+<span class="k">int</span> <span class="n">main</span><span class="p">(</span><span class="k">int</span> <span class="n">argc</span><span class="p">,</span> <span class="n">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="no">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">;</span>
+  <span class="n">char</span> <span class="n">st1</span><span class="p">[</span><span class="n">max_size</span><span class="p">],</span> <span class="n">st2</span><span class="p">[</span><span class="n">max_size</span><span class="p">],</span> <span class="n">st3</span><span class="p">[</span><span class="n">max_size</span><span class="p">],</span> <span class="n">st4</span><span class="p">[</span><span class="n">max_size</span><span class="p">],</span> <span class="n">bestw</span><span class="p">[</span><span class="no">N</span><span class="p">][</span><span class="n">max_size</span><span class="p">],</span> <span class="n">file_name</span><span class="p">[</span><span class="n">max_size</span><span class="p">],</span> <span class="n">ch</span><span class="p">;</span>
+  <span class="n">float</span> <span class="k">dist</span><span class="p">,</span> <span class="n">len</span><span class="p">,</span> <span class="n">bestd</span><span class="p">[</span><span class="no">N</span><span class="p">],</span> <span class="n">vec</span><span class="p">[</span><span class="n">max_size</span><span class="p">];</span>
+  <span class="n">long</span> <span class="n">long</span> <span class="n">words</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="n">b3</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span>
+  <span class="n">float</span> <span class="o">*</span><span class="no">M</span><span class="p">;</span>
+  <span class="n">char</span> <span class="o">*</span><span class="n">vocab</span><span class="p">;</span>
+  <span class="k">int</span> <span class="no">TCN</span><span class="p">,</span> <span class="no">CCN</span> <span class="o">=</span> <span class="mh">0</span><span class="p">,</span> <span class="no">TACN</span> <span class="o">=</span> <span class="mh">0</span><span class="p">,</span> <span class="no">CACN</span> <span class="o">=</span> <span class="mh">0</span><span class="p">,</span> <span class="no">SECN</span> <span class="o">=</span> <span class="mh">0</span><span class="p">,</span> <span class="no">SYCN</span> <span class="o">=</span> <span class="mh">0</span><span class="p">,</span> <span class="no">SEAC</span> <span class="o">=</span> <span class="mh">0</span><span class="p">,</span> <span class="no">SYAC</span> <span class="o">=</span> <span class="mh">0</span><span class="p">,</span> <span class="no">QID</span> <span class="o">=</span> <span class="mh">0</span><span class="p">,</span> <span class="no">TQ</span> <span class="o">=</span> <span class="mh">0</span><span class="p">,</span> <span class="no">TQS</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mh">2</span><span class="p">)</span> <span class="p">{</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;Usage: ./compute-accuracy &lt;FILE&gt; &lt;threshold&gt;</span><span class="se">\n</span><span class="s">where FILE contains word projections, and threshold is used to reduce vocabulary of the model for fast approximate evaluation (0 = off, otherwise typical value is 30000)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="k">return</span> <span class="mh">0</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">strcpy</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mh">1</span><span class="p">]);</span>       <span class="c1">//第一个参数放question的文件名，question的每一行都是四元组</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&gt;</span> <span class="mh">2</span><span class="p">)</span> <span class="n">threshold</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mh">2</span><span class="p">]);</span>  <span class="c1">//第二个参数放阈值N，如果某个词的词频不在前N中，舍弃掉与这个词相关的question</span>
+  <span class="n">f</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">f</span> <span class="o">==</span> <span class="no">NULL</span><span class="p">)</span> <span class="p">{</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;Input file not found</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="k">return</span> <span class="o">-</span><span class="mh">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">fscanf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">&quot;%lld&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">words</span><span class="p">);</span>    <span class="c1">//vector.bin第一行放着两个参数，词典大小和向量维度，words存词典大小</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">threshold</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">words</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)</span> <span class="n">words</span> <span class="o">=</span> <span class="n">threshold</span><span class="p">;</span>
+  <span class="n">fscanf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">&quot;%lld&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">size</span><span class="p">);</span>     <span class="c1">//size存向量维度</span>
+  <span class="n">vocab</span> <span class="o">=</span> <span class="p">(</span><span class="n">char</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">words</span> <span class="o">*</span> <span class="n">max_w</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">char</span><span class="p">));</span> <span class="c1">//vocab即词典</span>
+  <span class="no">M</span> <span class="o">=</span> <span class="p">(</span><span class="n">float</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">words</span> <span class="o">*</span> <span class="n">size</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">float</span><span class="p">));</span>    <span class="c1">//M放的是word embedding矩阵</span>
+  <span class="k">if</span> <span class="p">(</span><span class="no">M</span> <span class="o">==</span> <span class="no">NULL</span><span class="p">)</span> <span class="p">{</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;Cannot allocate memory: %lld MB</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">words</span> <span class="o">*</span> <span class="n">size</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">float</span><span class="p">)</span> <span class="o">/</span> <span class="mh">1048576</span><span class="p">);</span>
+<span class="k">return</span> <span class="o">-</span><span class="mh">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">b</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">b</span> <span class="o">&lt;</span> <span class="n">words</span><span class="p">;</span> <span class="n">b</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> <span class="c1">//对每一行</span>
+<span class="n">fscanf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">&quot;%s%c&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vocab</span><span class="p">[</span><span class="n">b</span> <span class="o">*</span> <span class="n">max_w</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">ch</span><span class="p">);</span>  <span class="c1">//先读行首的单词，装进vocab</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">max_w</span><span class="p">;</span> <span class="n">a</span><span class="o">++</span><span class="p">)</span> <span class="n">vocab</span><span class="p">[</span><span class="n">b</span> <span class="o">*</span> <span class="n">max_w</span> <span class="o">+</span> <span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">toupper</span><span class="p">(</span><span class="n">vocab</span><span class="p">[</span><span class="n">b</span> <span class="o">*</span> <span class="n">max_w</span> <span class="o">+</span> <span class="n">a</span><span class="p">]);</span>   <span class="c1">//转换成大写</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">a</span><span class="o">++</span><span class="p">)</span> <span class="n">fread</span><span class="p">(</span><span class="o">&amp;</span><span class="no">M</span><span class="p">[</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">size</span><span class="p">],</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">float</span><span class="p">),</span> <span class="mh">1</span><span class="p">,</span> <span class="n">f</span><span class="p">);</span>    <span class="c1">//把相应的词向量存进M</span>
+<span class="n">len</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">a</span><span class="o">++</span><span class="p">)</span> <span class="n">len</span> <span class="o">+=</span> <span class="no">M</span><span class="p">[</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">size</span><span class="p">]</span> <span class="o">*</span> <span class="no">M</span><span class="p">[</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">size</span><span class="p">];</span>    <span class="c1">//计算出该向量的长度</span>
+<span class="n">len</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">len</span><span class="p">);</span>    
+<span class="k">for</span> <span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">a</span><span class="o">++</span><span class="p">)</span> <span class="no">M</span><span class="p">[</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">size</span><span class="p">]</span> <span class="o">/=</span> <span class="n">len</span><span class="p">;</span>              <span class="c1">//向量除以向量长度（归一化）</span>
+  <span class="p">}</span>
+  <span class="n">fclose</span><span class="p">(</span><span class="n">f</span><span class="p">);</span>
+  <span class="no">TCN</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span>              <span class="c1">//</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mh">1</span><span class="p">)</span> <span class="p">{</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="no">N</span><span class="p">;</span> <span class="n">a</span><span class="o">++</span><span class="p">)</span> <span class="n">bestd</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="no">N</span><span class="p">;</span> <span class="n">a</span><span class="o">++</span><span class="p">)</span> <span class="n">bestw</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="mh">0</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span>
+<span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%s&quot;</span><span class="p">,</span> <span class="n">st1</span><span class="p">);</span>       <span class="c1">//从question 文件中读一行</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">strlen</span><span class="p">(</span><span class="n">st1</span><span class="p">);</span> <span class="n">a</span><span class="o">++</span><span class="p">)</span> <span class="n">st1</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">toupper</span><span class="p">(</span><span class="n">st1</span><span class="p">[</span><span class="n">a</span><span class="p">]);</span>
+<span class="k">if</span> <span class="p">((</span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="n">st1</span><span class="p">,</span> <span class="s">&quot;:&quot;</span><span class="p">))</span> <span class="o">||</span> <span class="p">(</span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="n">st1</span><span class="p">,</span> <span class="s">&quot;EXIT&quot;</span><span class="p">))</span> <span class="o">||</span> <span class="n">feof</span><span class="p">(</span><span class="n">stdin</span><span class="p">))</span> <span class="p">{</span> <span class="c1">//如果遇到：exit或者文件结束，表示一节的统计结束，要打印结果了</span>
+  <span class="k">if</span> <span class="p">(</span><span class="no">TCN</span> <span class="o">==</span> <span class="mh">0</span><span class="p">)</span> <span class="no">TCN</span> <span class="o">=</span> <span class="mh">1</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="no">QID</span> <span class="o">!=</span> <span class="mh">0</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">//QID指的是question类别，前5类是语义的，后边类别都是句法的</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;ACCURACY TOP1: %.2f %%  (%d / %d)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="no">CCN</span> <span class="o">/</span> <span class="p">(</span><span class="n">float</span><span class="p">)</span><span class="no">TCN</span> <span class="o">*</span> <span class="mh">100</span><span class="p">,</span> <span class="no">CCN</span><span class="p">,</span> <span class="no">TCN</span><span class="p">);</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;Total accuracy: %.2f %%   Semantic accuracy: %.2f %%   Syntactic accuracy: %.2f %% </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="no">CACN</span> <span class="o">/</span> <span class="p">(</span><span class="n">float</span><span class="p">)</span><span class="no">TACN</span> <span class="o">*</span> <span class="mh">100</span><span class="p">,</span> <span class="no">SEAC</span> <span class="o">/</span> <span class="p">(</span><span class="n">float</span><span class="p">)</span><span class="no">SECN</span> <span class="o">*</span> <span class="mh">100</span><span class="p">,</span> <span class="no">SYAC</span> <span class="o">/</span> <span class="p">(</span><span class="n">float</span><span class="p">)</span><span class="no">SYCN</span> <span class="o">*</span> <span class="mh">100</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="no">QID</span><span class="o">++</span><span class="p">;</span>
+  <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%s&quot;</span><span class="p">,</span> <span class="n">st1</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">feof</span><span class="p">(</span><span class="n">stdin</span><span class="p">))</span> <span class="k">break</span><span class="p">;</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">st1</span><span class="p">);</span>
+  <span class="no">TCN</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span>
+  <span class="no">CCN</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span>
+  <span class="k">continue</span><span class="p">;</span>
+<span class="p">}</span>
+    <span class="c1">//否则的话  st1 st2 st3 st4分别表示一个question的4元组，注意全都变成大写，也就是说，这个计算是忽略大小写的</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="n">st1</span><span class="p">,</span> <span class="s">&quot;EXIT&quot;</span><span class="p">))</span> <span class="k">break</span><span class="p">;</span>
+<span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%s&quot;</span><span class="p">,</span> <span class="n">st2</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">strlen</span><span class="p">(</span><span class="n">st2</span><span class="p">);</span> <span class="n">a</span><span class="o">++</span><span class="p">)</span> <span class="n">st2</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">toupper</span><span class="p">(</span><span class="n">st2</span><span class="p">[</span><span class="n">a</span><span class="p">]);</span>
+<span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%s&quot;</span><span class="p">,</span> <span class="n">st3</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">a</span><span class="o">&lt;</span><span class="n">strlen</span><span class="p">(</span><span class="n">st3</span><span class="p">);</span> <span class="n">a</span><span class="o">++</span><span class="p">)</span> <span class="n">st3</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">toupper</span><span class="p">(</span><span class="n">st3</span><span class="p">[</span><span class="n">a</span><span class="p">]);</span>
+<span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%s&quot;</span><span class="p">,</span> <span class="n">st4</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">strlen</span><span class="p">(</span><span class="n">st4</span><span class="p">);</span> <span class="n">a</span><span class="o">++</span><span class="p">)</span> <span class="n">st4</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">toupper</span><span class="p">(</span><span class="n">st4</span><span class="p">[</span><span class="n">a</span><span class="p">]);</span>
+
+    <span class="c1">//找到st1 st2 st3的index</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">b</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">b</span> <span class="o">&lt;</span> <span class="n">words</span><span class="p">;</span> <span class="n">b</span><span class="o">++</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">vocab</span><span class="p">[</span><span class="n">b</span> <span class="o">*</span> <span class="n">max_w</span><span class="p">],</span> <span class="n">st1</span><span class="p">))</span> <span class="k">break</span><span class="p">;</span>
+<span class="n">b1</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">b</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">b</span> <span class="o">&lt;</span> <span class="n">words</span><span class="p">;</span> <span class="n">b</span><span class="o">++</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">vocab</span><span class="p">[</span><span class="n">b</span> <span class="o">*</span> <span class="n">max_w</span><span class="p">],</span> <span class="n">st2</span><span class="p">))</span> <span class="k">break</span><span class="p">;</span>
+<span class="n">b2</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">b</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">b</span> <span class="o">&lt;</span> <span class="n">words</span><span class="p">;</span> <span class="n">b</span><span class="o">++</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">vocab</span><span class="p">[</span><span class="n">b</span> <span class="o">*</span> <span class="n">max_w</span><span class="p">],</span> <span class="n">st3</span><span class="p">))</span> <span class="k">break</span><span class="p">;</span>
+<span class="n">b3</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+
+    <span class="c1">//初始化最优选择</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="no">N</span><span class="p">;</span> <span class="n">a</span><span class="o">++</span><span class="p">)</span> <span class="n">bestd</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span>  <span class="c1">//放最大的相似度</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="no">N</span><span class="p">;</span> <span class="n">a</span><span class="o">++</span><span class="p">)</span> <span class="n">bestw</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="mh">0</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="c1">//放对应的词</span>
+<span class="no">TQ</span><span class="o">++</span><span class="p">;</span>   <span class="c1">//question数量加1,total question</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">b1</span> <span class="o">==</span> <span class="n">words</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">b2</span> <span class="o">==</span> <span class="n">words</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">b3</span> <span class="o">==</span> <span class="n">words</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">b</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">b</span> <span class="o">&lt;</span> <span class="n">words</span><span class="p">;</span> <span class="n">b</span><span class="o">++</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">vocab</span><span class="p">[</span><span class="n">b</span> <span class="o">*</span> <span class="n">max_w</span><span class="p">],</span> <span class="n">st4</span><span class="p">))</span> <span class="k">break</span><span class="p">;</span>  <span class="c1">//找到st4这个词在词典中的位置b</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">b</span> <span class="o">==</span> <span class="n">words</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">a</span><span class="o">++</span><span class="p">)</span> <span class="n">vec</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="no">M</span><span class="p">[</span><span class="n">a</span> <span class="o">+</span> <span class="n">b2</span> <span class="o">*</span> <span class="n">size</span><span class="p">]</span> <span class="o">-</span> <span class="no">M</span><span class="p">[</span><span class="n">a</span> <span class="o">+</span> <span class="n">b1</span> <span class="o">*</span> <span class="n">size</span><span class="p">])</span> <span class="o">+</span> <span class="no">M</span><span class="p">[</span><span class="n">a</span> <span class="o">+</span> <span class="n">b3</span> <span class="o">*</span> <span class="n">size</span><span class="p">];</span> <span class="c1">//根据st1 st2 st3算出analogy后st4应该是怎样的向量vec</span>
+<span class="no">TQS</span><span class="o">++</span><span class="p">;</span>      <span class="c1">//total question seen,这说明这道question是可以解的，不管对错，至少四元组中每一个单词都成功的找到了，TQS+1</span>
+<span class="c1">//遍历词典，找到与预期向量vec最接近(cosine值最大)的那个向量和它对应的单词</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">c</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">words</span><span class="p">;</span> <span class="n">c</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="n">b1</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="n">b2</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="n">b3</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+  <span class="k">dist</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">a</span><span class="o">++</span><span class="p">)</span> <span class="k">dist</span> <span class="o">+=</span> <span class="n">vec</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="no">M</span><span class="p">[</span><span class="n">a</span> <span class="o">+</span> <span class="n">c</span> <span class="o">*</span> <span class="n">size</span><span class="p">];</span> 
+  <span class="k">for</span> <span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="no">N</span><span class="p">;</span> <span class="n">a</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+<span class="k">if</span> <span class="p">(</span><span class="k">dist</span> <span class="o">&gt;</span> <span class="n">bestd</span><span class="p">[</span><span class="n">a</span><span class="p">])</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">d</span> <span class="o">=</span> <span class="no">N</span> <span class="o">-</span> <span class="mh">1</span><span class="p">;</span> <span class="n">d</span> <span class="o">&gt;</span> <span class="n">a</span><span class="p">;</span> <span class="n">d</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+<span class="n">bestd</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="n">bestd</span><span class="p">[</span><span class="n">d</span> <span class="o">-</span> <span class="mh">1</span><span class="p">];</span>
+<span class="n">strcpy</span><span class="p">(</span><span class="n">bestw</span><span class="p">[</span><span class="n">d</span><span class="p">],</span> <span class="n">bestw</span><span class="p">[</span><span class="n">d</span> <span class="o">-</span> <span class="mh">1</span><span class="p">]);</span>
+  <span class="p">}</span>
+  <span class="n">bestd</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="k">dist</span><span class="p">;</span>
+  <span class="n">strcpy</span><span class="p">(</span><span class="n">bestw</span><span class="p">[</span><span class="n">a</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">vocab</span><span class="p">[</span><span class="n">c</span> <span class="o">*</span> <span class="n">max_w</span><span class="p">]);</span>
+  <span class="k">break</span><span class="p">;</span>
+<span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+    <span class="c1">//如果最接近的这个向量刚好是st4，</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="n">st4</span><span class="p">,</span> <span class="n">bestw</span><span class="p">[</span><span class="mh">0</span><span class="p">]))</span> <span class="p">{</span>
+  <span class="no">CCN</span><span class="o">++</span><span class="p">;</span> <span class="c1">//correct count加1</span>
+  <span class="no">CACN</span><span class="o">++</span><span class="p">;</span> <span class="c1">//correct average count 加1</span>
+  <span class="k">if</span> <span class="p">(</span><span class="no">QID</span> <span class="o">&lt;=</span> <span class="mh">5</span><span class="p">)</span> <span class="no">SEAC</span><span class="o">++</span><span class="p">;</span> <span class="k">else</span> <span class="no">SYAC</span><span class="o">++</span><span class="p">;</span> <span class="c1">//如果QID小于6， semantic analogy correct 加1， 否则 syntactic analogy correct加1</span>
+<span class="p">}</span>
+<span class="k">if</span> <span class="p">(</span><span class="no">QID</span> <span class="o">&lt;=</span> <span class="mh">5</span><span class="p">)</span> <span class="no">SECN</span><span class="o">++</span><span class="p">;</span> <span class="k">else</span> <span class="no">SYCN</span><span class="o">++</span><span class="p">;</span> <span class="c1">//如果QID小于6，semantic count加1，否则syntactic count加1</span>
+<span class="no">TCN</span><span class="o">++</span><span class="p">;</span> <span class="c1">//total count 加1</span>
+<span class="no">TACN</span><span class="o">++</span><span class="p">;</span> <span class="c1">//total average count加1</span>
+  <span class="p">}</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Questions seen / total: %d %d   %.2f %% </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="no">TQS</span><span class="p">,</span> <span class="no">TQ</span><span class="p">,</span> <span class="no">TQS</span><span class="o">/</span><span class="p">(</span><span class="n">float</span><span class="p">)</span><span class="no">TQ</span><span class="o">*</span><span class="mh">100</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mh">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h1>Python版本</h1>
+<p>源代码不能直接处理文本格式的词向量，而且在Python的环境下工作习惯了，因此我写了Python版本，如下：</p>
+<div class="highlight"><pre><span class="cp"># coding:utf8</span>
+<span class="n">from</span> <span class="n">config</span><span class="p">.</span><span class="n">params</span> <span class="n">import</span> <span class="n">word_analogy_raw</span><span class="p">,</span> <span class="n">wikipedia_wordvectors</span>
+<span class="n">import</span> <span class="n">numpy</span> <span class="n">as</span> <span class="n">np</span>
+<span class="n">def</span> <span class="n">compute_accuracy</span><span class="p">(</span><span class="n">analogy_question_file</span><span class="o">=</span><span class="n">word_analogy_raw</span><span class="p">,</span> <span class="n">word_embedding_file</span><span class="o">=</span><span class="n">wikipedia_wordvectors</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">word_embedding</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="n">in</span> <span class="n">open</span><span class="p">(</span><span class="n">word_embedding_file</span><span class="p">)</span><span class="o">:</span>
+        <span class="k">if</span> <span class="n">line</span><span class="p">.</span><span class="n">count</span><span class="p">(</span><span class="sc">&#39; &#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="o">:</span>
+            <span class="k">continue</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">sep</span> <span class="o">=</span> <span class="n">line</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="sc">&#39; &#39;</span><span class="p">)</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="o">:</span><span class="n">sep</span><span class="p">].</span><span class="n">upper</span><span class="p">()</span>
+        <span class="n">vector</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">asarray</span><span class="p">([</span><span class="kt">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="n">in</span> <span class="n">line</span><span class="p">[</span><span class="n">sep</span> <span class="o">+</span> <span class="mi">1</span><span class="o">:</span><span class="p">].</span><span class="n">split</span><span class="p">(</span><span class="sc">&#39; &#39;</span><span class="p">)])</span>
+        <span class="n">word_embedding</span><span class="p">[</span><span class="n">token</span><span class="p">]</span> <span class="o">=</span> <span class="n">vector</span> <span class="o">/</span> <span class="n">np</span><span class="p">.</span><span class="n">linalg</span><span class="p">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
+    <span class="n">TCN</span> <span class="o">=</span> <span class="n">CCN</span> <span class="o">=</span> <span class="n">TACN</span> <span class="o">=</span> <span class="n">CACN</span> <span class="o">=</span> <span class="n">SECN</span> <span class="o">=</span> <span class="n">SYCN</span> <span class="o">=</span> <span class="n">SEAC</span> <span class="o">=</span> <span class="n">SYAC</span> <span class="o">=</span> <span class="n">QID</span> <span class="o">=</span> <span class="n">TQ</span> <span class="o">=</span> <span class="n">TQS</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="n">in</span> <span class="n">open</span><span class="p">(</span><span class="n">analogy_question_file</span><span class="p">)</span><span class="o">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;:&#39;</span><span class="o">:</span>
+            <span class="k">if</span> <span class="n">QID</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">:</span>
+                <span class="n">print</span> <span class="err">&#39;</span><span class="n">ACCURACY</span> <span class="n">TOP1</span><span class="o">:</span> <span class="o">%</span><span class="mf">.2f</span> <span class="o">%%</span>  <span class="p">(</span><span class="o">%</span><span class="n">i</span> <span class="o">/</span> <span class="o">%</span><span class="n">i</span><span class="p">)</span><span class="err">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">TCN</span> <span class="o">==</span> <span class="mi">0</span> <span class="n">and</span> <span class="mi">0</span> <span class="n">or</span> <span class="n">CCN</span> <span class="o">/</span> <span class="kt">float</span><span class="p">(</span><span class="n">TCN</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="n">CCN</span><span class="p">,</span> <span class="n">TCN</span><span class="p">)</span>
+                <span class="n">print</span> <span class="err">&#39;</span><span class="n">Total</span> <span class="n">accuracy</span><span class="o">:</span> <span class="o">%</span><span class="mf">.2f</span> <span class="o">%%</span> <span class="p">(</span><span class="o">%</span><span class="n">i</span> <span class="o">/</span> <span class="o">%</span><span class="n">i</span><span class="p">)</span>   <span class="n">Semantic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="o">%</span><span class="mf">.2f</span> <span class="o">%%</span> <span class="p">(</span><span class="o">%</span><span class="n">i</span> <span class="o">/</span> <span class="o">%</span><span class="n">i</span><span class="p">)</span> <span class="n">Syntactic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="o">%</span><span class="mf">.2f</span> <span class="o">%%</span> <span class="p">(</span><span class="o">%</span><span class="n">i</span> <span class="o">/</span> <span class="o">%</span><span class="n">i</span><span class="p">)</span> <span class="err">\</span><span class="n">n</span><span class="err">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="mf">0.0</span> <span class="k">if</span> <span class="n">TACN</span> <span class="o">==</span> <span class="mi">0</span>  <span class="k">else</span>  <span class="n">CACN</span> <span class="o">/</span> <span class="kt">float</span><span class="p">(</span><span class="n">TACN</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="n">CACN</span><span class="p">,</span> <span class="n">TACN</span><span class="p">,</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">SECN</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">SEAC</span> <span class="o">/</span> <span class="kt">float</span><span class="p">(</span><span class="n">SECN</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="n">SEAC</span><span class="p">,</span> <span class="n">SECN</span><span class="p">,</span>  <span class="mf">0.0</span> <span class="k">if</span> <span class="n">SYCN</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">SYAC</span> <span class="o">/</span> <span class="kt">float</span><span class="p">(</span><span class="n">SYCN</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="n">SYAC</span><span class="p">,</span> <span class="n">SYCN</span><span class="p">)</span>
+            <span class="n">print</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="p">].</span><span class="n">strip</span><span class="p">(),</span> <span class="sc">&#39;:&#39;</span>
+            <span class="n">QID</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">TCN</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">CCN</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">continue</span>
+        <span class="n">st0</span><span class="p">,</span> <span class="n">st1</span><span class="p">,</span> <span class="n">st2</span><span class="p">,</span> <span class="n">st3</span> <span class="o">=</span> <span class="n">line</span><span class="p">.</span><span class="n">upper</span><span class="p">().</span><span class="n">split</span><span class="p">(</span><span class="sc">&#39; &#39;</span><span class="p">)</span>
+        <span class="n">bestd</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">bestw</span> <span class="o">=</span> <span class="err">&#39;&#39;</span>
+        <span class="n">TQ</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">st0</span> <span class="n">not</span> <span class="n">in</span> <span class="n">word_embedding</span> <span class="n">or</span> <span class="n">st1</span> <span class="n">not</span> <span class="n">in</span> <span class="n">word_embedding</span> <span class="n">or</span> <span class="n">st2</span> <span class="n">not</span> <span class="n">in</span> <span class="n">word_embedding</span><span class="o">:</span>
+            <span class="k">continue</span>
+        <span class="n">expect_v</span> <span class="o">=</span> <span class="n">word_embedding</span><span class="p">[</span><span class="n">st1</span><span class="p">]</span> <span class="o">-</span> <span class="n">word_embedding</span><span class="p">[</span><span class="n">st0</span><span class="p">]</span> <span class="o">+</span> <span class="n">word_embedding</span><span class="p">[</span><span class="n">st2</span><span class="p">]</span>
+        <span class="n">TQS</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="n">in</span> <span class="n">word_embedding</span><span class="o">:</span>
+            <span class="k">if</span> <span class="n">word</span> <span class="o">==</span> <span class="n">st0</span> <span class="n">or</span> <span class="n">word</span> <span class="o">==</span> <span class="n">st1</span> <span class="n">or</span> <span class="n">word</span> <span class="o">==</span> <span class="n">st2</span><span class="o">:</span>
+                <span class="k">continue</span>
+            <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">dot</span><span class="p">(</span><span class="n">expect_v</span><span class="p">,</span> <span class="n">word_embedding</span><span class="p">[</span><span class="n">word</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">dist</span> <span class="o">&gt;</span> <span class="n">bestd</span><span class="o">:</span>
+                <span class="n">bestd</span> <span class="o">=</span> <span class="n">dist</span>
+                <span class="n">bestw</span> <span class="o">=</span> <span class="n">word</span>
+        <span class="k">if</span> <span class="n">bestw</span> <span class="o">==</span> <span class="n">st3</span><span class="o">:</span>
+            <span class="n">CCN</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">CACN</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">QID</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="o">:</span>
+                <span class="n">SEAC</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nl">else:</span>
+                <span class="n">SYAC</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">QID</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="o">:</span>
+            <span class="n">SECN</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nl">else:</span>
+            <span class="n">SYCN</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">TCN</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">TACN</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">print</span> <span class="err">&#39;</span><span class="n">Questions</span> <span class="n">seen</span> <span class="o">/</span> <span class="n">total</span><span class="o">:</span> <span class="o">%</span><span class="n">d</span> <span class="o">%</span><span class="n">d</span>   <span class="o">%</span><span class="mf">.2f</span> <span class="o">%%</span> <span class="err">\</span><span class="n">n</span><span class="err">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">TQS</span><span class="p">,</span> <span class="n">TQ</span><span class="p">,</span> <span class="n">TQS</span> <span class="o">/</span> <span class="kt">float</span><span class="p">(</span><span class="n">TQ</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="err">&#39;</span><span class="n">__main__</span><span class="err">&#39;</span><span class="o">:</span>
+    <span class="n">compute_accuracy</span><span class="p">(</span><span class="n">word_embedding_file</span><span class="o">=</span><span class="err">&#39;</span><span class="n">E</span><span class="o">:/</span><span class="n">data</span><span class="o">/</span><span class="n">wordVectors</span><span class="o">/</span><span class="n">vectors_bin0</span><span class="p">.</span><span class="n">bin</span><span class="err">&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>要注意，原版代码提供了Top N和frequency threshold两个参数，个人觉得没什么作用，在Python版本里阉割掉了。感兴趣的同学可以自行实现。</p>
+<h1>测试算法描述</h1>
+<p>有了这个questions-words.txt，就可以对你训练出来的词向量的质量进行判断了。</p>
+<h2>word2vec工具包</h2>
+<p>在word2vec工具包里，可以直接运行</p>
+<div class="highlight"><pre><span class="p">.</span><span class="o">/</span><span class="n">compute</span><span class="o">-</span><span class="n">accuracy</span> <span class="n">vectors</span><span class="p">.</span><span class="n">bin</span> <span class="o">&lt;</span> <span class="n">questions</span><span class="o">-</span><span class="n">words</span><span class="p">.</span><span class="n">txt</span>
+</pre></div>
+
+
+<p>就可以了对vectors.bin进行测试了。结果如下：</p>
+<div class="highlight"><pre><span class="n">james</span><span class="err">@</span><span class="n">ubuntu</span><span class="o">:~/</span><span class="n">projects</span><span class="o">/</span><span class="n">W2Vorigin</span><span class="err">$</span> <span class="n">Wocompute</span><span class="o">-</span><span class="n">accuracy</span> <span class="n">vectors</span><span class="p">.</span><span class="n">bin</span> <span class="o">&lt;</span> <span class="n">questions</span><span class="o">-</span><span class="n">words</span><span class="p">.</span><span class="n">txt</span>
+<span class="n">capital</span><span class="o">-</span><span class="n">common</span><span class="o">-</span><span class="n">countries</span><span class="o">:</span>
+<span class="n">ACCURACY</span> <span class="n">TOP1</span><span class="o">:</span> <span class="mf">36.17</span> <span class="o">%</span>  <span class="p">(</span><span class="mi">183</span> <span class="o">/</span> <span class="mi">506</span><span class="p">)</span>
+<span class="n">Total</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">36.17</span> <span class="o">%</span>   <span class="n">Semantic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">36.17</span> <span class="o">%</span>   <span class="n">Syntactic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="o">-</span><span class="n">nan</span> <span class="o">%</span> 
+<span class="n">capital</span><span class="o">-</span><span class="n">world</span><span class="o">:</span>
+<span class="n">ACCURACY</span> <span class="n">TOP1</span><span class="o">:</span> <span class="mf">16.64</span> <span class="o">%</span>  <span class="p">(</span><span class="mi">593</span> <span class="o">/</span> <span class="mi">3564</span><span class="p">)</span>
+<span class="n">Total</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">19.07</span> <span class="o">%</span>   <span class="n">Semantic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">19.07</span> <span class="o">%</span>   <span class="n">Syntactic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="o">-</span><span class="n">nan</span> <span class="o">%</span> 
+<span class="nl">currency:</span>
+<span class="n">ACCURACY</span> <span class="n">TOP1</span><span class="o">:</span> <span class="mf">2.85</span> <span class="o">%</span>  <span class="p">(</span><span class="mi">17</span> <span class="o">/</span> <span class="mi">596</span><span class="p">)</span>
+<span class="n">Total</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">17.00</span> <span class="o">%</span>   <span class="n">Semantic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">17.00</span> <span class="o">%</span>   <span class="n">Syntactic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="o">-</span><span class="n">nan</span> <span class="o">%</span> 
+<span class="n">city</span><span class="o">-</span><span class="n">in</span><span class="o">-</span><span class="n">state</span><span class="o">:</span>
+<span class="n">ACCURACY</span> <span class="n">TOP1</span><span class="o">:</span> <span class="mf">16.48</span> <span class="o">%</span>  <span class="p">(</span><span class="mi">384</span> <span class="o">/</span> <span class="mi">2330</span><span class="p">)</span>
+<span class="n">Total</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">16.82</span> <span class="o">%</span>   <span class="n">Semantic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">16.82</span> <span class="o">%</span>   <span class="n">Syntactic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="o">-</span><span class="n">nan</span> <span class="o">%</span> 
+<span class="nl">family:</span>
+<span class="n">ACCURACY</span> <span class="n">TOP1</span><span class="o">:</span> <span class="mf">47.86</span> <span class="o">%</span>  <span class="p">(</span><span class="mi">201</span> <span class="o">/</span> <span class="mi">420</span><span class="p">)</span>
+<span class="n">Total</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">18.58</span> <span class="o">%</span>   <span class="n">Semantic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">18.58</span> <span class="o">%</span>   <span class="n">Syntactic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="o">-</span><span class="n">nan</span> <span class="o">%</span> 
+<span class="n">gram1</span><span class="o">-</span><span class="n">adjective</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">adverb</span><span class="o">:</span>
+<span class="n">ACCURACY</span> <span class="n">TOP1</span><span class="o">:</span> <span class="mf">3.43</span> <span class="o">%</span>  <span class="p">(</span><span class="mi">34</span> <span class="o">/</span> <span class="mi">992</span><span class="p">)</span>
+<span class="n">Total</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">16.79</span> <span class="o">%</span>   <span class="n">Semantic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">18.58</span> <span class="o">%</span>   <span class="n">Syntactic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">3.43</span> <span class="o">%</span> 
+<span class="n">gram2</span><span class="o">-</span><span class="n">opposite</span><span class="o">:</span>
+<span class="n">ACCURACY</span> <span class="n">TOP1</span><span class="o">:</span> <span class="mf">6.88</span> <span class="o">%</span>  <span class="p">(</span><span class="mi">52</span> <span class="o">/</span> <span class="mi">756</span><span class="p">)</span>
+<span class="n">Total</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">15.98</span> <span class="o">%</span>   <span class="n">Semantic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">18.58</span> <span class="o">%</span>   <span class="n">Syntactic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">4.92</span> <span class="o">%</span> 
+<span class="n">gram3</span><span class="o">-</span><span class="n">comparative</span><span class="o">:</span>
+<span class="n">ACCURACY</span> <span class="n">TOP1</span><span class="o">:</span> <span class="mf">30.48</span> <span class="o">%</span>  <span class="p">(</span><span class="mi">406</span> <span class="o">/</span> <span class="mi">1332</span><span class="p">)</span>
+<span class="n">Total</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">17.82</span> <span class="o">%</span>   <span class="n">Semantic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">18.58</span> <span class="o">%</span>   <span class="n">Syntactic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">15.97</span> <span class="o">%</span> 
+<span class="n">gram4</span><span class="o">-</span><span class="n">superlative</span><span class="o">:</span>
+<span class="n">ACCURACY</span> <span class="n">TOP1</span><span class="o">:</span> <span class="mf">6.65</span> <span class="o">%</span>  <span class="p">(</span><span class="mi">66</span> <span class="o">/</span> <span class="mi">992</span><span class="p">)</span>
+<span class="n">Total</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">16.85</span> <span class="o">%</span>   <span class="n">Semantic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">18.58</span> <span class="o">%</span>   <span class="n">Syntactic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">13.70</span> <span class="o">%</span> 
+<span class="n">gram5</span><span class="o">-</span><span class="n">present</span><span class="o">-</span><span class="n">participle</span><span class="o">:</span>
+<span class="n">ACCURACY</span> <span class="n">TOP1</span><span class="o">:</span> <span class="mf">12.50</span> <span class="o">%</span>  <span class="p">(</span><span class="mi">132</span> <span class="o">/</span> <span class="mi">1056</span><span class="p">)</span>
+<span class="n">Total</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">16.49</span> <span class="o">%</span>   <span class="n">Semantic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">18.58</span> <span class="o">%</span>   <span class="n">Syntactic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">13.46</span> <span class="o">%</span> 
+<span class="n">gram6</span><span class="o">-</span><span class="n">nationality</span><span class="o">-</span><span class="n">adjective</span><span class="o">:</span>
+<span class="n">ACCURACY</span> <span class="n">TOP1</span><span class="o">:</span> <span class="mf">48.52</span> <span class="o">%</span>  <span class="p">(</span><span class="mi">738</span> <span class="o">/</span> <span class="mi">1521</span><span class="p">)</span>
+<span class="n">Total</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">19.95</span> <span class="o">%</span>   <span class="n">Semantic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">18.58</span> <span class="o">%</span>   <span class="n">Syntactic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">21.48</span> <span class="o">%</span> 
+<span class="n">gram7</span><span class="o">-</span><span class="n">past</span><span class="o">-</span><span class="n">tense</span><span class="o">:</span>
+<span class="n">ACCURACY</span> <span class="n">TOP1</span><span class="o">:</span> <span class="mf">14.94</span> <span class="o">%</span>  <span class="p">(</span><span class="mi">233</span> <span class="o">/</span> <span class="mi">1560</span><span class="p">)</span>
+<span class="n">Total</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">19.45</span> <span class="o">%</span>   <span class="n">Semantic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">18.58</span> <span class="o">%</span>   <span class="n">Syntactic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">20.23</span> <span class="o">%</span> 
+<span class="n">gram8</span><span class="o">-</span><span class="n">plural</span><span class="o">:</span>
+<span class="n">ACCURACY</span> <span class="n">TOP1</span><span class="o">:</span> <span class="mf">28.38</span> <span class="o">%</span>  <span class="p">(</span><span class="mi">378</span> <span class="o">/</span> <span class="mi">1332</span><span class="p">)</span>
+<span class="n">Total</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">20.15</span> <span class="o">%</span>   <span class="n">Semantic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">18.58</span> <span class="o">%</span>   <span class="n">Syntactic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">21.37</span> <span class="o">%</span> 
+<span class="n">gram9</span><span class="o">-</span><span class="n">plural</span><span class="o">-</span><span class="n">verbs</span><span class="o">:</span>
+<span class="n">ACCURACY</span> <span class="n">TOP1</span><span class="o">:</span> <span class="mf">12.87</span> <span class="o">%</span>  <span class="p">(</span><span class="mi">112</span> <span class="o">/</span> <span class="mi">870</span><span class="p">)</span>
+<span class="n">Total</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">19.80</span> <span class="o">%</span>   <span class="n">Semantic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">18.58</span> <span class="o">%</span>   <span class="n">Syntactic</span> <span class="n">accuracy</span><span class="o">:</span> <span class="mf">20.66</span> <span class="o">%</span> 
+<span class="n">Questions</span> <span class="n">seen</span> <span class="o">/</span> <span class="n">total</span><span class="o">:</span> <span class="mi">17827</span> <span class="mi">19544</span>   <span class="mf">91.21</span> <span class="o">%</span>
+</pre></div>
+
+
+<p>注意：word2vec工具源码只支持二进制二格式的词向量文件。如果需要对文本格式的词向量进行测试，可以参考本文所提供的Python版本。</p>
+<h2>Python版本</h2>
+<p>Python版里只提供了两个参数，一个是questions-words.txt的文件路径，一个是词向量文件的路径。运行结果与上边的大致类似。Python版本的运行速度比起word2vec的C版本确实慢不少，词向量文件较大时不建议使用。</p>
+<h1>That's it</h1>
+<h1>参考文献</h1>
+<p>[1] Mikolov, T., Corrado, G., Chen, K. and Dean, J. Efficient Estimation ofWord Representations in Vector Space. 1–12.</p>
+  </div>
+
+
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'zchaosblog';
+        var disqus_identifier = "word-analogy-taskxiang-jie-ji-pythonban-ben-de-ce-shi-jiao-ben.html";
+        var disqus_title = "word analogy task详解及python版本的测试脚本";
+        var disqus_url = "http://www.chaoslog.com/word-analogy-taskxiang-jie-ji-pythonban-ben-de-ce-shi-jiao-ben.html";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus</a>.</noscript>
+    </div>
+
+          </div>
+
+            <div class="span3">
+  <div class="well">
+
+    <p><abbr class="fa fa-calendar" title="2015-02-05T00:00:00+08:00"> 2015-02-05</abbr></p>
+
+      <p><address class="fa fa-user"> By <a href="http://www.chaoslog.com/author/chao-james.html" rel="author">超(James)</a></address></p>
+
+
+    <hr/>
+
+      <p>
+              <a href="http://www.chaoslog.com/category/word-analogy.html" rel="tag tooltip" class="label label-info" data-placement="right" data-original-title="1 article in this category">word analogy</a>
+            <a href="/tag/python.html" rel="tooltip" class="label" data-placement="right" data-original-title="2 articles with this tag">python</a>
+            <a href="/tag/ci-xiang-liang.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">词向量</a>
+            <a href="/tag/ci-biao-da.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">词表达</a>
+            <a href="/tag/accuracy.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">accuracy</a>
+            <a href="/tag/word-analogy.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">word analogy</a>
+            <a href="/tag/word-representation.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">word representation</a>
+      </p>
+      <hr/>
+
+
+
+  </div>
+              
+            </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- TODO: make footer sticky -->
+    <footer class="container-fluid">
+      <div class="container">
+        <div class="row">
+
+            <div class="span2">
+                <h5>Social</h5>
+                <ul class="unstyled">
+                  <li>  <a href="http://weibo.com/271421133">
+      <img src="http://g.etfv.co/http://weibo.com?defaulticon=lightpng" width="16" height="16" class="icon" alt="weibo.com icon"/>
+    微博
+  </a></li>
+                  <li>  <a href="https://twitter.com/kukumayas">
+      <i class="fa fa-twitter"></i>
+    twitter
+  </a></li>
+                  <li>  <a href="https://www.linkedin.com/in/kukumayas">
+      <img src="http://g.etfv.co/http://www.linkedin.com?defaulticon=lightpng" width="16" height="16" class="icon" alt="www.linkedin.com icon"/>
+    linkedin
+  </a></li>
+                  <li>  <a href="https://github.com/kukumayas">
+      <i class="fa fa-github"></i>
+    github
+  </a></li>
+                </ul>
+            </div>
+            <div class="span2">
+            </div>
+
+          <div class="span2">
+            <h5>Browse content by</h5>
+            <ul class="fa-ul">
+
+            </ul>
+          </div>
+
+          <div class="span2 muted">
+            <h5>Copyright notice</h5>
+            <p>© Copyright 2014-2015 超(James).</p>
+          </div>
+
+          <div class="span2 muted">
+            <h5>Disclaimer</h5>
+              <p>All opinions expressed in this site are my own personal opinions and are not endorsed by, nor do they represent the opinions of my previous, current and future employers or any of its affiliates, partners or customers.</p>
+          </div>
+
+          <div class="span2">
+            <h5 class="pull-right"><a href="#" class="fa fa-arrow-up"> Back to top</a></h5>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="row span12 muted text-center">
+          Site generated by <a href="http://getpelican.com"> Pelican</a>.<br/>
+          <a href="https://github.com/kdeldycke/plumage"> Plumage</a> theme by <a href="http://kevin.deldycke.com">Kevin Deldycke</a>.
+        </div>
+      </div>
+
+    </footer>
+
+    <script src="//code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="//cdn.jsdelivr.net/jquery.magnific-popup/0.9.9/jquery.magnific-popup.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script src="http://www.chaoslog.com/theme/js/jquery.mglass.js"></script>
+    <script src="http://www.chaoslog.com/theme/js/application.js"></script>
+
+  </body>
+</html>
