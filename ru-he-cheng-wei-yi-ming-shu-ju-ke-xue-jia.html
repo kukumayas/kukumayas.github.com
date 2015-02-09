@@ -66,30 +66,29 @@
   
 
   <div>
-    <p>本文总结了数据科学领域的资源</p>
-<h1>基础知识</h1>
-<p>关键字：
+    <p>本文总结了数据科学领域的资源，很大程度上参考了Quora的<a href="http://www.quora.com/How-do-I-become-a-data-scientist">这篇文章</a>，根据博主的经验在内容上做了适当的调整，仅供参考</p>
+<h1>1.基础知识</h1>
+<p>课程方面要学的有：
 <a href="https://www.quora.com/What-are-the-best-resources-for-mastering-multivariable-calculus">多值微积分</a>、数值分析、<a href="https://www.coursera.org/course/matrix">线性几何</a>、概率论、Python</p>
-<p>微积分在机器学习和各种求概率中非常重要。线性几何、矩阵对于机器学习的大多数概念都是必不可少的。Python这种编程语言非常适合搞数据科学。其他的知识（比如随机森林，pandas，A/B测试）随着你的工作开展和学习会慢慢接触到，这些都不是基本的问题。</br>
-如果你还是学生，一定要学好计算科学和统计学，选课的时候要记得选线性几何、矩阵、计算科学、概率论等相关的课程。</p>
-<h1>Python是数据科学家最重要的语言</h1>
-<p>Python有着像matlab一样强大数值计算工具包NumPy；有着绘图工具包matplotlib；有着科学计算工具包SciPy（基于Numpy和matplotlib的）。这三者为Python提供了像Matlab一样强大的矩阵控制能力，这是Python完胜Perl和Ruby的地方。</br>
-当然，除了Python之外，R，Matlab/Octave，Mathematica/Sage也正在崛起。这些语言也有着一些优势。不过，就拿R来说，R的数据框架和相关的控制能力已经被Python的pandas工具包实现了。Scikit-learn也提供了像R一样强大的机器学习算法库。 Mathematica/Sage中“notebook”的概念也被IPython notebooks实现了。</p>
-当然，Python也不是万能的，比如：</p>
+<p>微积分在机器学习和各种求概率中非常重要。线性几何、矩阵对于机器学习的大多数概念都是必不可少的。Python这种编程语言非常适合搞数据科学。其他的知识（比如随机森林，pandas，A/B测试）随着你的工作开展和学习会慢慢接触到，这些都不是基本的问题。</br></p>
+<p>如果你还是学生，一定要学好计算科学和统计学，选课的时候要记得选线性几何、矩阵、计算科学、概率论等相关的课程。</p>
+<h1>2.Python是数据科学家最重要的语言</h1>
+<p>Python有着像matlab一样强大数值计算工具包NumPy；有着绘图工具包matplotlib；有着科学计算工具包SciPy（基于Numpy和matplotlib的）。这三者为Python提供了像Matlab一样强大的矩阵控制能力，这是Python完胜Perl和Ruby的地方。</br></p>
+<p>当然，除了Python之外，R，Matlab/Octave，Mathematica/Sage也正在崛起。这些语言也有着一些优势。不过，就拿R来说，R的数据框架和相关的控制能力已经被Python的pandas工具包实现了。Scikit-learn也提供了像R一样强大的机器学习算法库。 Mathematica/Sage中“notebook”的概念也被IPython notebooks实现了。</p></p>
+<p>当然，Python也不是万能的，比如：</p>
 <ol>
-<li>语法比起Matlab和Octave来说还是笨重了，R的语法就好很多。</li>
-<li>Python缺少像ggplot2这种静态图和D3这种可交互图。matplotlib用起来还是比较复杂</li>
-<li>处理大数据时，Numpy和pandas这些库有些捉襟见肘。Continuum正在致力于这个问题，还需要等待。</li>
-<li>对于数据控制，缺少像LINQ那样的内置的声明式的语言。Pandas对数据控制的能力还是比较低级，而且当你深入研究Pandas语法的时候很可能崩溃。</li>
-<li>缺少面向数据科学家的专门的IDE，R的R Studio就不错。</li>
+<li>语法比起Matlab和Octave来说还是笨重了，R的语法就好很多</li>
+<li>Python缺少像ggplot2这种静态图和D3这种可交互图,matplotlib用起来还是比较复杂</li>
+<li>处理大数据时，Numpy和pandas这些库有些捉襟见肘，Continuum正在致力于解决这个问题，目前来看还没有完成</li>
+<li>对于数据控制，缺少像LINQ那样的内置的声明式的语言。Pandas对数据控制的能力还是比较低级，而且当你深入研究Pandas的时候很可能会被它的语法整崩溃</li>
+<li>缺少面向数据科学家的专门的IDE，R的R Studio就不错</li>
 </ol>
 <p>对于数据科学家而言，Python可能是最重要的语言了，如前文所述，它有着非常丰富的生态系统。</p>
-R语言能够在处理过的数据上运行机器学习算法，但是Python直接能够处理数据，而Pandas几乎可以像SQL那样对数据进行控制。Matplotlib能够让你对数据和结果进行可视化，以便快速理解你的数据。Scikit-learn提供了机器学习算法支持，Theano提供了深度学习框架（还可以使用GPU加速）。用过R、matlab、Octive、Python、SAS和Microsoft Analysis Services的人都推荐用Python。</p>
-想学Python，可以参考这个<a href="http://www.quora.com/How-do-I-learn-Python-3">列表</a>。</p>
-<h1>加入社区</h1>
-<p>到<a href="http://meetup.com/">Meetup</a>上找一些你感兴趣的talk，在线的学习数据科学，认识一些数据科学家或者将来的数据科学家。</p>
-于都一些<a href="http://www.quora.com/What-are-the-best-blogs-about-data">数据科学相关的博客</a>，follow一些有影响力的数据科学家。</p>
-数据科学第一手的信息资源，一般是在是twitter、Quora上用户，例如</p>
+R语言能够在处理过的数据上运行机器学习算法，但是Python直接能够处理数据，而Pandas几乎可以像SQL那样对数据进行控制。Matplotlib能够让你对数据和结果进行可视化，以便快速理解你的数据。Scikit-learn提供了机器学习算法支持，Theano提供了深度学习框架（还可以使用GPU加速）。用过R、matlab、Octive、Python、SAS和Microsoft Analysis Services的人都推荐用Python。</p></p>
+<h1>3.加入社区</h1>
+<p><strong>Meetup</strong>：到<a href="http://meetup.com/">Meetup</a>上找一些你感兴趣的talk，在线的学习数据科学，认识一些数据科学家或者将来的数据科学家。</p></p>
+<p><strong>博客</strong>：这里有个<a href="http://www.quora.com/What-are-the-best-blogs-about-data">国外比较具有影响力的数据科学家的博客列表</a>，可以选一些follow。</p></p>
+<p><strong>Quora、twitter</strong>：数据科学第一手的信息资源的来源一般是twitter、Quora上的用户，例如</p>
 <pre>
 Jeff Hammerbacher @hackingdata
 Peter Skomoroch @peteskomoroch
@@ -110,13 +109,160 @@ Data Science @pinoystartup/sim-data-team
 Strata Program Committee @strataconf/strata-committee
 </pre>
 
-<p>到Quora和Twitter上去follow这些人吧。另外，
-<a href="http://blog.revolutionanalytics.com/2012/12/the-most-influential-data-scientists-on-twitter.html">这个网站</a>分析了twitter上哪些人在数据科学领域具有影响力。</p>
-<h1>配置你的环境</h1>
+<p>到Quora和Twitter上去follow这些人吧，别忘了follow自己这个领域最牛的那几个人，比如博主follow了Socher。另外，
+<a href="http://blog.revolutionanalytics.com/2012/12/the-most-influential-data-scientists-on-twitter.html">这个网站</a>分析了twitter上哪些人在数据科学领域最具影响力。Quora上有很多资源，跟stackoverflow不同的是，Quora比较像知乎，会有人给你一些像survey类型的经验，一般问题都比较抽象，回答比较系统；stackoverflow更擅长具体的问题，尤其是编程方面的细节问题。</p>
+<p><strong>新浪微博</strong>：由于博主只是一个普通的微博用户，且个人较偏向于文本方向，对大咖们的了解还不够深入，难免有缺漏，如果有缺漏了请多包涵且告知。以下是我个人关注的微博大咖们：</p>
+<pre>
+王威廉
+王伟DL
+刘知远THU
+张栋_机器学习
+李航博士
+丕子
+winsty
+黄亮-算法时代
+梁斌penny
+licstar
+老师木
+数盟社区
+52nlp
+好东西传送门
+西瓜大丸子汤
+数据挖掘研究院
+爱可可-爱生活
+龙星镖局
+</pre>
+
+<p>另外，好东西传送门的日报每天都会收录微博精华，懒得刷微博的同学可以看这里<a href="http://memect.com/">http://memect.com/</a></p>
+<p><strong>个人加的几个QQ群</strong>：
+<pre>
+自然语言处理 174735435
+龙星课程-机器学习 163973179
+神经网络 / 深度学习 385206220
+Deep Learning高质量 209306058
+生物医学文本挖掘BIONLP 290210559
+数盟【数据分析1群】 321311420
+</pre></p>
+<h1>4.配置你的环境</h1>
 <p><a href="https://github.com/cs109/content/wiki/Installing-Python">Python的安裝</a></br>
 <a href="http://www.r-project.org/">R</a>和<a href="http://www.rstudio.com/products/rstudio/download/">R studio</a></br>
-<a href="http://www.sublimetext.com/">Sublime Text</a>(比notepad++和ue更适合写代码，我个人用的eclipse和PyDev)</p>
-<h1>学习=着使用这些工具</h1>
+<a href="http://www.sublimetext.com/">Sublime Text</a> (比notepad++和ue更适合写代码，个人用的eclipse+PyDev)</p>
+<h1>5.学习相关工具的使用</h1>
+<p><strong>Python</strong>: 可以结合<a href="https://docs.python.org/2/tutorial/">官方教程</a>、<a href="http://www.2cto.com/shouce/Pythonbbf/">笨办法学Python</a>（<a href="http://learnpythonthehardway.org/">英文原版</a>）、<a href="http://greenteapress.com/thinkpython/thinkpython.html">Think Python：How to Think Like a Computer Scientist</a>来学习。书可以从<a href="http://importpython.com/books/">这里</a>找几本。当然，找到最适合自己的方式是最好的，以上只是提供一些选择而已，博主当时是学的<a href="https://www.udacity.com/course/cs262">Udacity的programming language</a>外加<a href="http://victoria.lviv.ua/html/fl5/NaturalLanguageProcessingWithPython.pdf">Natural Language Processing With Python</a></br></p>
+<p><strong>R</strong>: 推荐<a href="http://swirlstats.com/students.html">swirl</a>，一个数据科学和R配套学习的教程</br></p>
+<p><strong>Sublime Text</strong>: <a href="https://scotch.io/bar-talk/the-complete-visual-guide-to-sublime-text-3-getting-started-and-keyboard-shortcuts">这个网站</a>还不错，从配置到快捷键，里边的视频在youtube上</br></p>
+<p><strong>SQL</strong>: 个人感觉这个不太重要，而且SQL相对来说较简单，对找工作也许有点用处</br></p>
+<p><strong>结合概率统计来学习</strong>: 以上这些语言比起C、Java来说语法很简单，有基础的同学很轻松就能掌握，对于这类同学来说，可以结合概率统计顺便把编程语言给学了。例如：针对Python的<a href="http://greenteapress.com/thinkstats/">Think Stats</a>（<a href="http://greenteapress.com/thinkstats/thinkstats.pdf">pdf</a>）、针对R的<a href="http://book.douban.com/subject/21706191/">An Introduction to Statistical Learning</a>(<a href="https://class.stanford.edu/courses/HumanitiesScience/StatLearning/Winter2014/about">MOOC</a>)、应该掌握的统计学知识点可以参考<a href="https://bayesrule.files.wordpress.com/2014/07/probability_cheatsheet_140718.pdf">这里</a>。</p>
+<h1>6.哈佛的data science公开课</h1>
+<p>不必多说，看了再说，<a href="http://cm.dce.harvard.edu/2014/01/14328/publicationListing.shtml">视频</a>，<a href="https://drive.google.com/folderview?id=0BxYkKyLxfsNVd0xicUVDS1dIS0k&amp;usp=sharing">配套PPT</a>，<a href="https://github.com/cs109/content/tree/master/labs">配套实验</a>，<a href="http://nbviewer.ipython.org/github/cs109/content/tree/master/">配套作业</a></p>
+<h1>7.到Kaggle上找一些基础的竞赛练手</h1>
+<p>刚开始的时候最好不要直接参加由奖金的竞赛，因为这些竞赛的数据往往很大、复杂、晦涩，不适合学习。可以先学(wan)学(wan)Scikit-learn，拿这个简单的二元分类任务练手：<a href="https://www.kaggle.com/c/data-science-london-scikit-learn/rules?returnUrl=%2Fc%2Fdata-science-london-scikit-learn%2Fsubmit">Data Science London + Scikit-learn</a> 。</br></p>
+<p>接下来可以进军第二个任务： <a href="https://www.kaggle.com/c/titanic-gettingStarted">Titanic: Machine Learning from Disaster</a>，这个任务比第一个要稍微复杂那么一点（有枚举类型的变量categorical variables，丢失的变量这些情况了）。</br></p>
+<p>第三个任务，可以尝试<a href="https://www.kaggle.com/c/forest-cover-type-prediction">Forest Cover Type Prediction</a>。</br></p>
+<p>第四个任务，可以尝试<a href="https://www.kaggle.com/c/bike-sharing-demand">Bike Sharing Demand</a>，这里边有一些时间戳数据。</br></p>
+<p>第五个任务，尝试一些自然语言处理的任务，如<a href="https://www.kaggle.com/c/sentiment-analysis-on-movie-reviews">情感分析</a>。</br></p>
+<p>做完这些之后，再找些自己感兴趣的竞赛做做。</p>
+<h1>8.数据科学相关的知识</h1>
+<p><strong>产品指标</strong> 会教你公司里边关心什么、看重什么、他们是怎么衡量产品的：<a href="http://jwegan.com/growth-hacking/27-metrics-pinterests-internal-growth-dashboard/">The 27 Metrics in Pinterest’s Internal Growth Dashboard</a></br></p>
+<p><strong>优化方法</strong> 能帮你理解统计学和机器学习：<a href="http://stanford.edu/~boyd/cvxbook/">Convex Optimization - Boyd and Vandenberghe</a></br></p>
+<p><strong>A/B测试</strong> 其实在医学上已经应用多年了，只是换了个名字而已： <a href="http://www.quora.com/How-do-I-learn-about-A-B-Testing">How do I learn about A/B Testing?</a></br></p>
+<p><strong>用户行为</strong> <a href="http://www.productpsychology.com/category/user-behavior/">This Explains Everything " User Behavior</a></br></p>
+<p><strong>Feature Engineering</strong> <a href="http://www.quora.com/What-are-some-best-practices-in-Feature-Engineering">一些经验</a>，<a href="http://nbviewer.ipython.org/github/aguschin/kaggle/blob/master/forestCoverType_featuresEngineering.ipynb">一个案例</a> </br></p>
+<p><strong>大数据技术</strong> 针对大数据技术的工具、框架<a href="http://www.quora.com/How-do-I-learn-about-big-data-3?redirected_qid=1276087">How do I learn big data technologies?</a></br></p>
+<p><strong>Machine Learning</strong> <a href="http://www.quora.com/How-do-I-learn-Machine-Learning-1">How do I learn Machine Learning?</a></br></p>
+<p><strong>Natural Language Processing</strong> 自然语言处理需要把文本数据数学化，并且要尽量不丢失文本的“含义”。文本挖掘会让你接触全新的、令人兴奋的数据（做了都说好，谁做谁知道）<a href="http://www.quora.com/What-are-the-ways-in-which-one-can-begin-Natural-Language-Processing-Self-Study?redirected_qid=2990688">How do I learn Natural Language Processing (NLP)?</a></br></p>
+<p><strong>时间序列分析</strong> <a href="http://www.quora.com/How-do-I-learn-about-time-series-analysis-1">How do I learn about time series analysis?</a></br></p>
+<p><strong>数据文明</strong> <a href="http://www.oreilly.com/data/free/files/data-driven.pdf">data-driven.pdf</a></p>
+<h1>9.参与/solo出个顶层的产品来</h1>
+<p>用已掌握的数据科学和软件工程技能做出个让别人看了会点赞的成品出来，可以是网站、处理数据的新方法、炫酷的可视化等等。要做这么个成品，可以先看看以下内容：</p>
+<ul>
+<li><a href="http://www.quora.com/What-are-some-good-toy-problems-in-data-science">数据科学中的toy problem</a></li>
+<li><a href="http://www.quora.com/How-can-I-start-building-a-recommendation-engine">如何搭建一个推荐引擎</a></li>
+<li><a href="http://www.quora.com/What-are-some-ideas-for-a-quick-weekend-Python-project">怎么利用利用闲暇时间快速搭建Python项目</a></li>
+<li><a href="http://www.quora.com/What-is-a-good-measure-of-the-influence-of-a-Twitter-user">如何衡量一个twitter用户的影响力</a></li>
+<li><a href="http://www.quora.com/Where-can-I-find-large-datasets-open-to-the-public">开放的大规模数据集</a></li>
+<li><a href="http://www.quora.com/What-are-some-good-algorithms-for-a-prioritized-inbox">邮件优先级相关算法</a></li>
+<li><a href="http://www.quora.com/What-are-some-good-data-science-projects">一些优秀的数据科学project</a></li>
+</ul>
+<h1>10.公开和社交</h1>
+<p>在github上创建公开的仓库，写博客，把你的研究工作、参与的项目、Kaggle竞赛的解决方案、见解和想法都贴出来，这会让你提升影响力，为你的简历准备素材，跟通灵玉的其他人建立联系。</p>
+<h1>11.获得数据科学的实习或工作</h1>
+<p>BAT都有相关领域的实习岗位，另外<a href="http://www.quora.com/What-companies-have-data-science-internships">这里</a>有些国外的提供实习机会的公司</br></p>
+<p>搞不清自己该申请数据科学还是软件开发的实习？参考<a href="http://www.quora.com/What-are-some-tips-to-choose-whether-I-want-to-apply-for-a-Data-Science-or-Software-Engineering-internship">这里</a></br></p>
+<p>现在很多公司在初秋一直到冬天都会招聘数据科学岗位实习，仅仅是实习的话，记得不要花过多的时间去准备，直接去应聘就行。</p>
+<h1>12.在线书籍</h1>
+<p><a href="http://statweb.stanford.edu/~tibs/ElemStatLearn/">Elements of Statistical Learning: data mining, inference, and prediction. 2nd Edition.</a></br></p>
+<p><a href="http://www-bcf.usc.edu/~gareth/ISL/">Introduction to Statistical Learning: Page on usc.edu</a></br></p>
+<p><a href="http://greenteapress.com/thinkstats2/index.html">Think Stats: Probability and Statistics for Programmers</a></p>
+<h1>13.像数据科学家一样思考</h1>
+<p>以上已经详细的介绍了数据科学家所需要的具体技巧。想要像数据科学家一样思考，建立正确的态度，只有这些技术是远远不够的。以下列出了成为合格数据科学家的7项挑战：</p>
+<p>(1) 保持对数据的好奇</p>
+<p>作为一名数据科学家，你要自己找问题并且自己做出回答。数据科学家要自然而然的对他们看到的数据产生好奇，并找到解决问题的创新性方法。</p>
+<p>很多时候数据科学并不只是分析，而是找出一个有趣的问题并且找到解决方案。</p>
+<p>这里有两个典型的案例：</br>
+<a href="http://hilaryparker.com/2013/01/30/hilary-the-most-poisoned-baby-name-in-us-history/">Hilary: the most poisoned baby name in US history</a></br>
+<a href="http://blog.stevewhardin.com/2014/03/17/a-look-at-fire-response-data/">A Look at Fire Response Data</a></p>
+<p>总结: 对你感兴趣的问题或者主题进行思考，然后用数据的方式作出回答。</p>
+<p>(2) 用怀疑的眼光阅读新闻</p>
+<p>数据科学家的很多贡献往往是，他们从一堆信息里找出了哪些是重要的、哪些是假的（这是机器很难取代数据科学家的原因），这种习惯性的怀疑的眼光在任何科学领域都是有益的，尤其是在发展速度快的领域，因为这些领域更容易被假象误导。</p>
+<p>在看新闻的时候练习批判性的眼光吧，很多文章本质上都是有瑕疵的。这里有两个例子，评论里有答案：</br>
+Easier: <a href="http://www.nytimes.com/2011/10/01/opinion/you-love-your-iphone-literally.html?_r=1&amp;">You Love Your iPhone. Literally</a>
+</br>
+Harder: <a href="http://www.washingtonpost.com/blogs/monkey-cage/wp/2014/03/12/who-predicted-russias-military-intervention-2/">Who predicted Russia’s military intervention?</a></p>
+<p>总结：每当你看到新的文章时，记得持怀疑的态度，对文章进行评论，并指出它的问题在哪。</p>
+<p>(3) 把数据看成是改善消费者产品的工具</p>
+<p>试着了解一款互联网产品，检查它的主要渠道。有没有结账渠道？注册渠道？订单渠道？</p>
+<p>反复的检查这些渠道，然后提出一些假设方案来提升核心指标（比如转化率、用户分享数、注册用户数量等）。设计实验来验证你的假设是否真的会改变这些指标。</p>
+<p>总结：通过反馈邮件跟这个网站分享你的idea</p>
+<p>(4) 像贝叶斯一样思考</p>
+<p>像贝叶斯一样思考，用先验来作判断。这意味着，要想树立起数据科学家的思维方式，就必须一方面能够周详考虑新观测到的信息，另一方面又需要以往的直觉和经验（贝叶斯里的先验）。</p>
+<p>比如，检查下数据，发现今天的用户参与量明显下降了，下面哪种原因是最有可能的呢？</p>
+<ol>
+<li>用户参与量就是会突然的减少</li>
+<li>网站的某些功能down掉了</li>
+<li>登陆模块down掉了</li>
+</ol>
+<p>尽管1也能够作为一种解释，但是2和3看上去比1更靠谱，因为根据先验概率来看，2和3的概率要比1更大。</p>
+<p>再比如，你是Tesla公司的高级工程师，而在上个月中，5辆Tesla S着火了。有可能是什么原因呢？</p>
+<ol>
+<li>生产质量下降了，现在Tesla的安全性应当被重新测试</li>
+<li>安全性不是问题，因为与其他同行汽油车相比，Tesla S着火的概率已经算很低的了</li>
+</ol>
+<p>即使没什么经验的人也可能会得出1这样的结论，如果你经常做质量测试，那你的先验对2是否正确就会更有把握。不过，你应该继续寻找分别支持两个结论的信息，并继续寻找提升质量的办法，那么问题来了：什么样的信息应该值得留意呢？</p>
+<p>总结：回想一下你上一次没有用先验来指导思考就得出结论是什么时候，从现在开始避免再犯类似的错误。</p>
+<p>(5) 了解每种工具的能力</p>
+<p>“Knowledge is knowing that a tomato is a fruit, wisdom is not putting it in a fruit salad.” - Miles Kington</p>
+<p>知识会指导你实现经典的线性回归，而经验会告诉你这在实际当中几乎不会用到。</p>
+<p>知识会让你了解k-means聚类的5种变种，而经验会告诉你实际当中几乎不会单独在数据上聚类，以及k-means在特征过多的时候表现是多么的不如人意。</p>
+<p>知识会告诉你一堆复杂的技术，而经验会告诉你怎么在有限的时间里从这里边为你的公司选择一个最能产生效益的。</p>
+<p>当你到Coursera或EdX上学一门课的时候，你可能会随着课程开发出一堆工具，除非你能搞清楚在什么场合下用哪个合适，否则这一堆工具毫无实际作用。</p>
+<p>总结：在真实数据上尝试各种工具，发现他们各自的优点和不足。哪种工具在这种场合下最好，为什么？</p>
+<p>(6) 给别人讲一个复杂的概念</p>
+<p>Richard Feynman是怎么判断哪个概念他能懂，哪个不懂呢？</p>
+<p><em>Feynman称得上是一位伟大的老师，他能够向一些什么都不懂的学生讲明白一些较深的知识，这一点他为自己感到自豪。有人告诉他说：“Dick，跟我解释一下，为什么自选1/2粒子服从费米 - 狄拉克统计”，他考虑了一下听众的知识水平，然后说，“我会针对这个专门为新生讲一次课的。”过了几天他说：“我做不到。这个知识没有办法简化到新生能听懂的地步。这意味着我们并没有真的搞懂了这个知识点”</em></p>
+<p>Richard Feynman与众不同的地方就在于他能够提炼复杂的概念，把他们转换成可以理解的想法。类似的，一流的数据科学家与众不同的地方就是他们能够诚恳的分享他们的想法并且对这些想法作出解释和分析。</p>
+<p>总结：把你懂的一种技术概念介绍给你的朋友吧，也可以是在知乎、Quora或者优酷、youtube上。</p>
+<p>(7) 说服其他人什么才是重要的</p>
+<p>对一个数据科学家来说，比解释他们的分析更重要的，可能是与大家交流某个见解的价值和潜在的影响。</p>
+<p>数据科学的某个具体的任务将会商品化编程数据科学工具，然后不断的完善。新工具会让一些任务更新迭代，比如手写版应用、<a href="http://en.wikipedia.org/wiki/Data_wrangling">data wrangling</a>（数据清洗）、甚至是某些预测建模。</p>
+<p>然而，数据科学家发现并和别人分享什么才是重要的，这种能力永远不会过时。数据量在逐渐增加，对数据的一些潜在的见解也在增加，公司总会需要数据科学家来找出该怎么做才能对任务进行优化。</p>
+<p>数据科学家在企业中扮演的角色，是数据和公司之间的使者。数据科学家成功与否，关键在于他/她是怎么讲故事的、以及对公司带来了什么样的影响，其他的技能都是对这种能力的一种放大。</p>
+<p>总结：从统计学的角度来讲故事吧，跟别人交流你在数据上的重要发现，针对观众关心的事做些具有说服力的presentation。</p>
+<h1>14.关于找工作</h1>
+<p><img alt="" src="http://qph.is.quoracdn.net/main-qimg-5490d4512227b1c6069d5dbaa5ead766?convert_to_webp=true" /></p>
+<h1>15.不同人群如何成为数据科学家定制版</h1>
+<ul>
+<li><a href="http://www.quora.com/How-do-I-become-a-data-scientist-as-an-undergrad-2?redirected_qid=2529887">本科生如何成为数据科学家</a></li>
+<li><a href="http://www.quora.com/How-do-I-become-a-data-scientist-as-a-PhD-student-1?redirected_qid=2529898">博士生如何成为数据科学家</a></li>
+<li><a href="http://www.quora.com/How-do-I-become-a-data-scientist-without-the-necessary-skills">没有任何技术的人如何数据科学家</a></li>
+<li><a href="http://www.quora.com/How-do-I-become-a-data-scientist-without-going-to-college-having-a-degree">没有本科学历如何成为数据科学家</a></li>
+<li><a href="http://www.quora.com/How-do-I-become-a-data-scientist-without-a-PhD">没有博士学历如何成为数据科学家</a></li>
+<li><a href="http://www.quora.com/How-do-I-become-a-data-scientist-as-Physics-PhD-1">物理专业的博士如何成为数据科学家</a></li>
+<li><a href="http://www.quora.com/How-do-I-become-a-data-scientist-while-currently-working-in-a-different-job">正在从事其他行业工作的人如何成为数据科学家</a></li>
+<li><a href="http://www.quora.com/How-do-I-become-a-data-scientist-if-I-dont-know-how-to-code">不会编程如何成为数据科学家</a>
+更多的<a href="http://www.quora.com/What-is-the-Data-Science-topic-FAQ">数据科学FAQ</a></li>
+</ul>
+<h1>That's it</h1>
   </div>
 
 
@@ -141,7 +287,7 @@ Strata Program Committee @strataconf/strata-committee
             <div class="span3">
   <div class="well">
 
-    <p><abbr class="fa fa-calendar" title="2015-02-04T00:00:00+08:00"> 2015-02-04</abbr></p>
+    <p><abbr class="fa fa-calendar" title="2015-02-09T00:00:00+08:00"> 2015-02-09</abbr></p>
 
       <p><address class="fa fa-user"> By <a href="http://www.chaoslog.com/author/edwin-jarvis.html" rel="author">Edwin Jarvis</a></address></p>
 

@@ -67,7 +67,7 @@
 
   <div>
     <h1>前言</h1>
-<p>Mikolov在[1]中为了大概测试训练出来的词向量的质量，设计了一套word analogy的测试方法。Word analogy的意思是类比，比如"king"-"queen" = "man" - "woman", "China" - "Beijing" = "U.K." - "London", "bird" - "birds" = "word" - "words"，这几个例子就能很好的说明word analogy的含义。（发表点个人看法：结果后来Socher、Levy、Pennington就抓着这个茬不放了，要在这个集合上跟人家比词向量的质量。这样测实际上是不规范的，读完代码就懂了，当词向量词典不一样的时候，结果其实不太公平。审稿人居然没有任何异议，也可能这个领域比较新，暂时也没什么好的测试方法吧。个人替Mikolov委屈）
+<p>Mikolov在[1]中为了大概测试训练出来的词向量的质量，设计了一套word analogy的测试方法。Word analogy的意思是类比，比如"king"-"queen" = "man" - "woman", "China" - "Beijing" = "U.K." - "London", "bird" - "birds" = "word" - "words"，这几个例子就能很好的说明word analogy的含义。（发表点个人看法：结果后来Socher、Levy、Pennington就抓着这个茬不放了，要在这个集合上跟人家比词向量的质量。这样测实际上是不规范的，读完代码就懂了，当词向量词典不一样的时候，结果其实不太公平。审稿人居然没有任何异议，也可能这个领域比较新，暂时也没什么好的测试方法吧；另一方面，用这种类比的形式来评价词向量的好坏也有些牵强，这些相似度能否代表词向量对NLP应用的贡献呢，这里应该打个问号）
 </p>
 为了便于测试，Mikolov整理了一个文件，里边有将近20000个的这种类比关系，称之为analogy-question，每一个question是一个四元组，比如king queen man woman；而根据这些question的含义可以分成14种，分别是</p>
 <div class="highlight"><pre><span class="n">capital</span><span class="o">-</span><span class="n">common</span><span class="o">-</span><span class="n">countries</span>  <span class="mi">506</span>

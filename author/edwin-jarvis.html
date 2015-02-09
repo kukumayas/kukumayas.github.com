@@ -70,31 +70,29 @@
 
       <article>
         <header>
-          <h2><a href="http://www.chaoslog.com/word-analogy-taskxiang-jie-ji-pythonban-ben-de-ce-shi-jiao-ben.html" rel="bookmark" title="Permalink to word analogy task详解及python版本的测试脚本">word analogy task详解及python版本的测试脚本</a></h2>
+          <h2><a href="http://www.chaoslog.com/ru-he-cheng-wei-yi-ming-shu-ju-ke-xue-jia.html" rel="bookmark" title="Permalink to 如何成为一名数据科学家">如何成为一名数据科学家</a></h2>
         </header>
-        <div><h1>前言</h1>
-<p>Mikolov在[1]中为了大概测试训练出来的词向量的质量，设计了一套word analogy的测试方法。Word analogy的意思是类比，比如"king"-"queen" = "man" - "woman", "China" - "Beijing" = "U.K." - "London", "bird" - "birds" = "word" - "words"，这几个例子就能很好的说明word analogy的含义。（发表点个人看法：结果后来Socher、Levy、Pennington就抓着这个茬不放了，要在这个集合上跟人家比词向量的质量。这样测实际上是不规范的，读完代码就懂了，当词向量词典不一样的时候，结果其实不太公平。审稿人居然没有任何异议，也可能这个领域比较新，暂时也没什么好的测试方法吧。个人替Mikolov委屈）
-</p>
-为了便于测试，Mikolov整理了一个文件，里边有将近20000个的这种类比关系，称之为analogy-question，每一个question是一个四元组，比如king queen man woman；而根据这些question的含义可以分成14种，分别是</p>
-<div class="highlight"><pre><span class="n">capital</span><span class="o">-</span><span class="n">common ...</span></pre></div></div>
-        <div><a class="btn btn-primary" href="http://www.chaoslog.com/word-analogy-taskxiang-jie-ji-pythonban-ben-de-ce-shi-jiao-ben.html"><strong>➟ Read more</strong></a></div>
+        <div><p>本文总结了数据科学领域的资源，很大程度上参考了Quora的<a href="http://www.quora.com/How-do-I-become-a-data-scientist">这篇文章</a>，根据博主的经验在内容上做了适当的调整，仅供参考</p>
+<h1>1.基础知识</h1>
+<p>课程方面要学的有：
+<a href="https://www.quora.com/What-are-the-best-resources-for-mastering-multivariable-calculus">多值微积分</a>、数值分析、<a href="https://www.coursera.org/course/matrix">线性几何</a>、概率论、Python</p>
+<p>微积分在机器学习和各种求概率中非常重要。线性几何、矩阵对于机器学习的大多数概念都是必不可少的。Python这种编程语言非常适合搞数据科学。其他的知识（比如随机森林，pandas，A/B测试）随着你的工作开展和学习会慢慢接触到，这些都不是基本的问题。</br></p>
+<p>如果你还是学生，一定要学好计算科学和统计学，选课的时候要记得选线性几何、矩阵、计算科学、概率论等相关的课程。</p>
+<h1>2.Python是数据科学家最重要的语言</h1>
+<p>Python有着像matlab一样强大数值计算工具包NumPy；有着绘图工具包matplotlib；有着科学计算工具包SciPy（基于Numpy和matplotlib的）。这三者为Python提供了像Matlab一样强大的矩阵控制能力，这是Python完胜Perl和Ruby的地方。</br></p>
+<p>当然，除了Python之外，R，Matlab/Octave，Mathematica/Sage也正在崛起。这些语言也有着一些优势。不过，就拿R来说，R的数据框架和相关的控制能力已经被Python的pandas工具包实现了。Scikit-learn也提供了像R一样强大的机器学习算法库 ...</p></div>
+        <div><a class="btn btn-primary" href="http://www.chaoslog.com/ru-he-cheng-wei-yi-ming-shu-ju-ke-xue-jia.html"><strong>➟ Read more</strong></a></div>
       </article>
       <hr/>
       <article>
         <header>
-          <h2><a href="http://www.chaoslog.com/ru-he-cheng-wei-yi-ming-shu-ju-ke-xue-jia.html" rel="bookmark" title="Permalink to 如何成为一名数据科学家">如何成为一名数据科学家</a></h2>
+          <h2><a href="http://www.chaoslog.com/word-analogy-taskxiang-jie-ji-pythonban-ben-de-ce-shi-jiao-ben.html" rel="bookmark" title="Permalink to word analogy task详解及python版本的测试脚本">word analogy task详解及python版本的测试脚本</a></h2>
         </header>
-        <div><p>本文总结了数据科学领域的资源</p>
-<h1>基础知识</h1>
-<p>关键字：
-<a href="https://www.quora.com/What-are-the-best-resources-for-mastering-multivariable-calculus">多值微积分</a>、数值分析、<a href="https://www.coursera.org/course/matrix">线性几何</a>、概率论、Python</p>
-<p>微积分在机器学习和各种求概率中非常重要。线性几何、矩阵对于机器学习的大多数概念都是必不可少的。Python这种编程语言非常适合搞数据科学。其他的知识（比如随机森林，pandas，A/B测试）随着你的工作开展和学习会慢慢接触到，这些都不是基本的问题。</br>
-如果你还是学生，一定要学好计算科学和统计学，选课的时候要记得选线性几何、矩阵、计算科学、概率论等相关的课程。</p>
-<h1>Python是数据科学家最重要的语言</h1>
-<p>Python有着像matlab一样强大数值计算工具包NumPy；有着绘图工具包matplotlib；有着科学计算工具包SciPy（基于Numpy和matplotlib的）。这三者为Python提供了像Matlab一样强大的矩阵控制能力，这是Python完胜Perl和Ruby的地方。</br>
-当然，除了Python之外，R，Matlab/Octave，Mathematica/Sage也正在崛起。这些语言也有着一些优势。不过，就拿R来说，R的数据框架和相关的控制能力已经被Python的pandas工具包实现了。Scikit-learn也提供了像R一样强大的机器学习算法库。 Mathematica/Sage中“notebook”的概念也被IPython notebooks实现了。</p>
-当然 ...</div>
-        <div><a class="btn btn-primary" href="http://www.chaoslog.com/ru-he-cheng-wei-yi-ming-shu-ju-ke-xue-jia.html"><strong>➟ Read more</strong></a></div>
+        <div><h1>前言</h1>
+<p>Mikolov在[1]中为了大概测试训练出来的词向量的质量，设计了一套word analogy的测试方法。Word analogy的意思是类比，比如"king"-"queen" = "man" - "woman", "China" - "Beijing" = "U.K." - "London", "bird" - "birds" = "word" - "words"，这几个例子就能很好的说明word analogy的含义。（发表点个人看法：结果后来Socher、Levy、Pennington就抓着这个茬不放了，要在这个集合上跟人家比词向量的质量。这样测实际上是不规范的，读完代码就懂了，当词向量词典不一样的时候，结果其实不太公平。审稿人居然没有任何异议，也可能这个领域比较新，暂时也没什么好的测试方法吧；另一方面，用这种类比的形式来评价词向量的好坏也有些牵强，这些相似度能否代表词向量对NLP应用的贡献呢，这里应该打个问号）
+</p>
+为了便于测试，Mikolov整理了一个文件，里边有将近20000个的这种类比关系，称之为analogy-question，每一个question是一个四元组，比如king queen man woman；而根据这些question的含义可以分成14种 ...</div>
+        <div><a class="btn btn-primary" href="http://www.chaoslog.com/word-analogy-taskxiang-jie-ji-pythonban-ben-de-ce-shi-jiao-ben.html"><strong>➟ Read more</strong></a></div>
       </article>
       <hr/>
       <article>
@@ -103,7 +101,7 @@
         </header>
         <div><p>平时习惯了在某些特定的数据集合上做实验，简单的tokenization、预处理等步骤就足够了。但是在数据越来越大的年代，数据清洗越来越重要，也越来越复杂。看到Philip J.Guo 的这篇英文文章<a href="http://pgbovine.net/parsing-raw-data.htm">Parsing Raw Data</a>觉得不错，学习并译成中文，难免谬误，仅供参考。</p>
 <h1>前言</h1>
-<p>科研工作者、工程师、业务分析者这些和数据打交道的职业，数据分析在他们工作中是一项核心任务。这么不仅仅针对“大数据”的从业者，即使你笔记本硬盘上的数据也值得分析。</br>
+<p>科研工作者、工程师、业务分析者这些和数据打交道的职业，数据分析在他们工作中是一项核心任务。数据分析不仅仅针对“大数据”的从业者，即使你笔记本硬盘上的数据也值得分析。</br>
 数据分析的第一步是洗数据，原始数据可能有各种不同的来源，包括：</p>
 <ol>
 <li>Web服务器的日志</li>
