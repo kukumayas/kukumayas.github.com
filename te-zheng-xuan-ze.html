@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zhs">
+  <head>
+    <meta charset="utf-8"/>
+
+    <title>  特征选择
+ | Chaoslog</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="author" content=""/>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css"/>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/jquery.magnific-popup/0.9.9/magnific-popup.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/jquery.mglass.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/pygment-solarized-dark.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/style.css"/>
+
+    <!-- Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+    <link href='//fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'/>
+    <link href='//fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'/>
+
+
+    <link rel="icon" href="http://www.chaoslog.com/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="http://www.chaoslog.com/favicon.ico" type="image/x-icon">
+
+    <!-- Feeds -->
+
+
+  </head>
+
+  <body>
+    <div class="container">
+
+      <header>
+        <div class="page-header">
+          <h1><a href="http://www.chaoslog.com">Chaoslog</a> <small></small></h1>
+        </div>
+
+        <div class="navbar">
+          <div class="navbar-inner">
+            <a class="brand" href="http://www.chaoslog.com" title="">Chaoslog</a>
+            <ul class="nav">
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <section>
+
+        <div class="row">
+          <div class=" span9  ">
+  <h1>
+    <a href="http://www.chaoslog.com/te-zheng-xuan-ze.html" rel="bookmark" title="Permalink to 特征选择">特征选择</a>
+  </h1>
+          </div>
+        </div>
+
+        <div class="row">
+
+
+          <div class=" span9 " id="content" role="main">
+  
+
+  <div>
+    <p>特征选择(排序)对于数据科学家、机器学习从业者来说非常重要。好的特征选择能够提升模型的性能，更能帮助我们理解数据的特点、底层结构，这对进一步改善模型、算法都有着重要作用。</p>
+<p>特征选择主要有两个功能：</p>
+<ol>
+<li>减少特征数量、降维，使模型泛化能力更强，减少过拟合</li>
+<li>增强对特征和特征值之间的理解</li>
+</ol>
+<p>拿到数据集，一个特征选择方法，往往很难同时完成这两个目的。通常情况下，我们经常不管三七二十一，选择一种自己最熟悉或者最方便的特征选择方法（往往目的是降维，而忽略了对特征和数据理解的目的）。</p>
+<p>在许多机器学习相关的书里，很难找到关于特征选择的内容，因为特征选择要解决的问题往往被视为机器学习的一种副作用，一般不会单独拿出来讨论。</p>
+<p>本文将结合<a href="http://scikit-learn.org/stable/modules/feature_selection.html#univariate-feature-selection">Scikit-learn提供的例子</a>介绍几种常用的特征选择方法，它们各自的优缺点和问题。</p>
+<h1>1 去掉取值变化小的特征 Removing features with low variance</h1>
+<p>这应该是最简单的特征选择方法了：假设某特征的特征值只有0和1，并且在所有输入样本中，95%的实例的该特征取值都是1，那就可以认为这个特征作用不大。如果100%都是1，那这个特征就没意义了。当特征值都是离散型变量的时候这种方法才能用，如果是连续型变量，就需要将连续变量离散化之后才能用，而且实际当中，一般不太会有95%以上都取某个值的特征存在，所以这种方法虽然简单但是不太好用。可以把它作为特征选择的预处理，先去掉那些取值变化小的特征，然后再从接下来提到的的特征选择方法中选择合适的进行进一步的特征选择。</p>
+<h1>2 单变量特征选择 Univariate feature selection</h1>
+<p>单变量特征选择能够对每一个特征进行测试，衡量该特征和响应变量之间的关系，根据得分扔掉不好的特征。对于回归和分类问题可以采用卡方检验等方式对特征进行测试。</p>
+<p>这种方法比较简单，易于运行，易于理解，通常对于理解数据有较好的效果（但对特征优化、提高泛化能力来说不一定有效）；这种方法有许多改进的版本、变种。</p>
+<h2>2.1 Pearson相关系数 Pearson Correlation</h2>
+<p>皮尔森相关系数是一种最简单的，能帮助理解特征和响应变量之间关系的方法，该方法衡量的是变量之间的线性相关性，结果的取值区间为[-1，1]，-1表示完全的负相关(这个变量下降，那个就会上升)，+1表示完全的正相关，0表示没有线性相关。</p>
+<p>Pearson Correlation速度快、易于计算，经常在拿到数据(经过清洗和特征提取之后的)之后第一时间就执行。Scipy的<a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.pearsonr.html">pearsonr</a>方法能够同时计算相关系数和p-value，</p>
+<div class="highlight"><pre><span class="n">import</span> <span class="n">numpy</span> <span class="n">as</span> <span class="n">np</span>
+<span class="n">from</span> <span class="n">scipy</span><span class="p">.</span><span class="n">stats</span> <span class="n">import</span> <span class="n">pearsonr</span>
+<span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">size</span> <span class="o">=</span> <span class="mi">300</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+<span class="n">print</span> <span class="s">&quot;Lower noise&quot;</span><span class="p">,</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="p">))</span>
+<span class="n">print</span> <span class="s">&quot;Higher noise&quot;</span><span class="p">,</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="p">))</span>
+</pre></div>
+
+
+<p>Lower noise (0.71824836862138386, 7.3240173129992273e-49)</br>
+Higher noise (0.057964292079338148, 0.31700993885324746)</p>
+<p>这个例子中，我们比较了变量在加入噪音之前和之后的差异。当噪音比较小的时候，相关性很强，p-value很低。</p>
+<p>Scikit-learn提供的<a href="http://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_regression.html">f_regrssion</a>方法能够批量计算特征的p-value，非常方便，参考sklearn的<a href="http://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html">pipeline</a></p>
+<p>Pearson相关系数的一个明显缺陷是，作为特征排序机制，他只对线性关系敏感。如果关系是非线性的，即便两个变量具有一一对应的关系，Pearson相关性也可能会接近0。</p>
+<div class="highlight"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100000</span><span class="p">)</span>
+<span class="n">print</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+
+<p>-0.00230804707612</p>
+<p>更多类似的例子参考<a href="http://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Correlation_examples2.svg/506px-Correlation_examples2.svg.png">sample plots</a>。另外，如果仅仅根据相关系数这个值来判断的话，有时候会具有很强的误导性，如<a href="http://en.wikipedia.org/wiki/Anscombe%27s_quartet">Anscombe’s quartet</a>，最好把数据可视化出来，以免得出错误的结论。</p>
+<h2>2.2 互信息和最大信息系数 Mutual information and maximal information coefficient (MIC)</h2>
+<p><img alt="" src="http://i.imgur.com/4dbuAXe.png" />
+以上就是经典的互信息公式了。想把互信息直接用于特征选择其实不是太方便：1、它不属于度量方式，也没有办法归一化，在不同数据及上的结果无法做比较；2、对于连续变量的计算不是很方便（X和Y都是集合，x，y都是离散的取值），通常变量需要先离散化，而互信息的结果对离散化的方式很敏感。</p>
+<p>最大信息系数克服了这两个问题。它首先寻找一种最优的离散化方式，然后把互信息取值转换成一种度量方式，取值区间在[0，1]。<a href="http://minepy.sourceforge.net/">minepy</a>提供了MIC功能。</p>
+<p>反过头来看y=x^2这个例子，MIC算出来的互信息值为1(最大的取值)。</p>
+<div class="highlight"><pre><span class="n">from</span> <span class="n">minepy</span> <span class="n">import</span> <span class="n">MINE</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">MINE</span><span class="p">()</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
+<span class="n">m</span><span class="p">.</span><span class="n">compute_score</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">print</span> <span class="n">m</span><span class="p">.</span><span class="n">mic</span><span class="p">()</span>
+</pre></div>
+
+
+<p>1.0</p>
+<p>MIC的统计能力遭到了<a href="http://statweb.stanford.edu/~tibs/reshef/comment.pdf">一些质疑</a>，当零假设不成立时，MIC的统计就会受到影响。在有的数据集上不存在这个问题，但有的数据集上就存在这个问题。</p>
+<h2>2.3 距离相关系数 (Distance correlation)</h2>
+<p>距离相关系数是为了克服Pearson相关系数的弱点而生的。在x和x^2这个例子中，即便Pearson相关系数是0，我们也不能断定这两个变量是独立的（有可能是非线性相关）；但如果距离相关系数是0，那么我们就可以说这两个变量是独立的。</p>
+<p>R的<a href="http://cran.r-project.org/web/packages/energy/index.html">energy</a>包里提供了距离相关系数的实现，另外这是<a href="https://gist.github.com/josef-pkt/2938402">Python gist</a>的实现。</p>
+<div class="highlight"><pre><span class="cp">#R-code</span>
+<span class="o">&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">runif</span> <span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="o">&gt;</span> <span class="n">dcor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="mf">0.4943864</span>
+</pre></div>
+
+
+<p>尽管有MIC和距离相关系数在了，但当变量之间的关系接近线性相关的时候，Pearson相关系数仍然是不可替代的。第一、Pearson相关系数计算速度快，这在处理大规模数据的时候很重要。第二、Pearson相关系数的取值区间是[-1，1]，而MIC和距离相关系数都是[0，1]。这个特点使得Pearson相关系数能够表征更丰富的关系，符号表示关系的正负，绝对值能够表示强度。当然，Pearson相关性有效的前提是两个变量的变化关系是单调的。</p>
+<h2>2.4 基于学习模型的特征排序 (Model based ranking)</h2>
+<p>这种方法的思路是直接使用你要用的机器学习算法，针对每个单独的特征和响应变量建立预测模型。其实Pearson相关系数等价于线性回归里的标准化回归系数。假如某个特征和响应变量之间的关系是非线性的，可以用基于树的方法（决策树、随机森林）、或者扩展的线性模型等。基于树的方法比较易于使用，因为他们对非线性关系的建模比较好，并且不需要太多的调试。但要注意过拟合问题，因此树的深度最好不要太大，再就是运用交叉验证。</p>
+<p>在<a href="https://archive.ics.uci.edu/ml/datasets/Housing">波士顿房价数据集</a>上使用sklearn的<a href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html">随机森林回归</a>给出一个单变量选择的例子：</p>
+<div class="highlight"><pre><span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">cross_validation</span> <span class="n">import</span> <span class="n">cross_val_score</span><span class="p">,</span> <span class="n">ShuffleSplit</span>
+<span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">datasets</span> <span class="n">import</span> <span class="n">load_boston</span>
+<span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">ensemble</span> <span class="n">import</span> <span class="n">RandomForestRegressor</span>
+
+<span class="cp">#Load boston housing dataset as an example</span>
+<span class="n">boston</span> <span class="o">=</span> <span class="n">load_boston</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">boston</span><span class="p">[</span><span class="s">&quot;data&quot;</span><span class="p">]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">boston</span><span class="p">[</span><span class="s">&quot;target&quot;</span><span class="p">]</span>
+<span class="n">names</span> <span class="o">=</span> <span class="n">boston</span><span class="p">[</span><span class="s">&quot;feature_names&quot;</span><span class="p">]</span>
+
+<span class="n">rf</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">scores</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">X</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">:</span>
+     <span class="n">score</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">rf</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">i</span><span class="o">:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">Y</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s">&quot;r2&quot;</span><span class="p">,</span>
+                              <span class="n">cv</span><span class="o">=</span><span class="n">ShuffleSplit</span><span class="p">(</span><span class="n">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">.3</span><span class="p">))</span>
+     <span class="n">scores</span><span class="p">.</span><span class="n">append</span><span class="p">((</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">mean</span><span class="p">(</span><span class="n">score</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span> <span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+<span class="n">print</span> <span class="n">sorted</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="n">True</span><span class="p">)</span>
+</pre></div>
+
+
+<p>[(0.636, 'LSTAT'), (0.59, 'RM'), (0.472, 'NOX'), (0.369, 'INDUS'), (0.311, 'PTRATIO'), (0.24, 'TAX'), (0.24, 'CRIM'), (0.185, 'RAD'), (0.16, 'ZN'), (0.087, 'B'), (0.062, 'DIS'), (0.036, 'CHAS'), (0.027, 'AGE')]</p>
+<h1>3 线性模型和正则化</h1>
+<p>单变量特征选择方法独立的衡量每个特征与响应变量之间的关系，另一种主流的特征选择方法是基于机器学习模型的方法。有些机器学习方法本身就具有对特征进行打分的机制，或者很容易将其运用到特征选择任务中，例如回归模型，SVM，决策树，随机森林等等。说句题外话，这种方法好像在一些地方叫做wrapper类型，大概意思是说，特征排序模型和机器学习模型是耦盒在一起的，对应的非wrapper类型的特征选择方法叫做filter类型。</p>
+<p>下面将介绍如何用回归模型的系数来选择特征。越是重要的特征在模型中对应的系数就会越大，而跟输出变量越是无关的特征对应的系数就会越接近于0。在噪音不多的数据上，或者是数据量远远大于特征数的数据上，如果特征之间相对来说是比较独立的，那么即便是运用最简单的线性回归模型也一样能取得非常好的效果。</p>
+<div class="highlight"><pre><span class="s-Atom">from</span> <span class="s-Atom">sklearn</span><span class="p">.</span><span class="s-Atom">linear_model</span> <span class="s-Atom">import</span> <span class="nv">LinearRegression</span>
+<span class="s-Atom">import</span> <span class="s-Atom">numpy</span> <span class="s-Atom">as</span> <span class="s-Atom">np</span>
+
+<span class="s-Atom">np</span><span class="p">.</span><span class="s-Atom">random</span><span class="p">.</span><span class="nf">seed</span><span class="p">(</span><span class="m">0</span><span class="p">)</span>
+<span class="s-Atom">size</span> <span class="o">=</span> <span class="m">5000</span>
+
+<span class="s-Atom">#</span><span class="nv">A</span> <span class="s-Atom">dataset</span> <span class="s-Atom">with</span> <span class="m">3</span> <span class="s-Atom">features</span>
+<span class="nv">X</span> <span class="o">=</span> <span class="s-Atom">np</span><span class="p">.</span><span class="s-Atom">random</span><span class="p">.</span><span class="nf">normal</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="p">(</span><span class="s-Atom">size</span><span class="p">,</span> <span class="m">3</span><span class="p">))</span>
+<span class="s-Atom">#</span><span class="nv">Y</span> <span class="o">=</span> <span class="nv">X0</span> <span class="o">+</span> <span class="m">2</span><span class="o">*</span><span class="nv">X1</span> <span class="o">+</span> <span class="s-Atom">noise</span>
+<span class="nv">Y</span> <span class="o">=</span> <span class="nv">X</span><span class="p">[</span><span class="s-Atom">:</span><span class="p">,</span><span class="m">0</span><span class="p">]</span> <span class="o">+</span> <span class="m">2</span><span class="o">*</span><span class="nv">X</span><span class="p">[</span><span class="s-Atom">:</span><span class="p">,</span><span class="m">1</span><span class="p">]</span> <span class="o">+</span> <span class="s-Atom">np</span><span class="p">.</span><span class="s-Atom">random</span><span class="p">.</span><span class="nf">normal</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="s-Atom">size</span><span class="p">)</span>
+<span class="s-Atom">lr</span> <span class="o">=</span> <span class="nv">LinearRegression</span><span class="p">()</span>
+<span class="s-Atom">lr</span><span class="p">.</span><span class="nf">fit</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span>
+
+<span class="s-Atom">#</span><span class="nv">A</span> <span class="s-Atom">helper</span> <span class="s-Atom">method</span> <span class="s-Atom">for</span> <span class="s-Atom">pretty</span><span class="o">-</span><span class="s-Atom">printing</span> <span class="s-Atom">linear</span> <span class="s-Atom">models</span>
+<span class="s-Atom">def</span> <span class="nf">pretty_print_linear</span><span class="p">(</span><span class="s-Atom">coefs</span><span class="p">,</span> <span class="s-Atom">names</span> <span class="o">=</span> <span class="nv">None</span><span class="p">,</span> <span class="s-Atom">sort</span> <span class="o">=</span> <span class="nv">False</span><span class="p">)</span><span class="s-Atom">:</span>
+    <span class="s-Atom">if</span> <span class="s-Atom">names</span> <span class="o">==</span> <span class="nv">None</span><span class="s-Atom">:</span>
+        <span class="s-Atom">names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;X%s&quot;</span> <span class="c1">% x for x in range(len(coefs))]</span>
+    <span class="s-Atom">lst</span> <span class="o">=</span> <span class="nf">zip</span><span class="p">(</span><span class="s-Atom">coefs</span><span class="p">,</span> <span class="s-Atom">names</span><span class="p">)</span>
+    <span class="s-Atom">if</span> <span class="nn">sort</span><span class="p">:</span>
+        <span class="s-Atom">lst</span> <span class="o">=</span> <span class="nf">sorted</span><span class="p">(</span><span class="s-Atom">lst</span><span class="p">,</span>  <span class="s-Atom">key</span> <span class="o">=</span> <span class="s-Atom">lambda</span> <span class="nn">x</span><span class="p">:</span><span class="o">-</span><span class="s-Atom">np</span><span class="p">.</span><span class="nf">abs</span><span class="p">(</span><span class="s-Atom">x</span><span class="p">[</span><span class="m">0</span><span class="p">]))</span>
+    <span class="s-Atom">return</span> <span class="s2">&quot; + &quot;</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">&quot;%s * %s&quot;</span> <span class="c1">% (round(coef, 3), name)</span>
+                                   <span class="s-Atom">for</span> <span class="s-Atom">coef</span><span class="p">,</span> <span class="s-Atom">name</span> <span class="s-Atom">in</span> <span class="s-Atom">lst</span><span class="p">)</span>
+
+<span class="s-Atom">print</span> <span class="s2">&quot;Linear model:&quot;</span><span class="p">,</span> <span class="nf">pretty_print_linear</span><span class="p">(</span><span class="s-Atom">lr</span><span class="p">.</span><span class="s-Atom">coef_</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Linear model: 0.984 * X0 + 1.995 * X1 + -0.041 * X2</p>
+<p>在这个例子当中，尽管数据中存在一些噪音，但这种特征选择模型仍然能够很好的体现出数据的底层结构。当然这也是因为例子中的这个问题非常适合用线性模型来解：特征和响应变量之间全都是线性关系，并且特征之间均是独立的。</p>
+<p>在很多实际的数据当中，往往存在多个互相关联的特征，这时候模型就会变得不稳定，数据中细微的变化就可能导致模型的巨大变化（模型的变化本质上是系数，或者叫参数，可以理解成W），这会让模型的预测变得困难，这种现象也称为多重共线性。例如，假设我们有个数据集，它的真实模型应该是Y=X1+X2，当我们观察的时候，发现Y'=X1+X2+e，e是噪音。如果X1和X2之间存在线性关系，例如X1约等于X2，这个时候由于噪音e的存在，我们学到的模型可能就不是Y=X1+X2了，有可能是Y=2X1，或者Y=-X1+3X2。</p>
+<p>下边这个例子当中，在同一个数据上加入了一些噪音，用随机森林算法进行特征选择。</p>
+<div class="highlight"><pre><span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">linear_model</span> <span class="n">import</span> <span class="n">LinearRegression</span>
+
+<span class="n">size</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="n">X_seed</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+<span class="n">X1</span> <span class="o">=</span> <span class="n">X_seed</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">.1</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+<span class="n">X2</span> <span class="o">=</span> <span class="n">X_seed</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">.1</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+<span class="n">X3</span> <span class="o">=</span> <span class="n">X_seed</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">.1</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+
+<span class="n">Y</span> <span class="o">=</span> <span class="n">X1</span> <span class="o">+</span> <span class="n">X2</span> <span class="o">+</span> <span class="n">X3</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span><span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">X3</span><span class="p">]).</span><span class="n">T</span>
+
+<span class="n">lr</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+<span class="n">lr</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">)</span>
+<span class="n">print</span> <span class="s">&quot;Linear model:&quot;</span><span class="p">,</span> <span class="n">pretty_print_linear</span><span class="p">(</span><span class="n">lr</span><span class="p">.</span><span class="n">coef_</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Linear model: -1.291 * X0 + 1.591 * X1 + 2.747 * X2</p>
+<p>系数之和接近3，基本上和上上个例子的结果一致，应该说学到的模型对于预测来说还是不错的。但是，如果从系数的字面意思上去解释特征的重要性的话，X3对于输出变量来说具有很强的正面影响，而X1具有负面影响，而实际上所有特征与输出变量之间的影响是均等的。</p>
+<p>同样的方法和套路可以用到类似的线性模型上，比如逻辑回归。</p>
+<h2>3.1 正则化模型</h2>
+<p>正则化就是把额外的约束或者惩罚项加到已有模型（损失函数）上，以防止过拟合并提高泛化能力。损失函数由原来的E(X,Y)变为E(X,Y)+alpha||w||，w是模型系数组成的向量（有些地方也叫参数parameter，coefficients），||·||一般是L1或者L2范数，alpha是一个可调的参数，控制着正则化的强度。当用在线性模型上时，L1正则化和L2正则化也称为Lasso和Ridge。</p>
+<h2>3.2 L1正则化/Lasso</h2>
+<p>L1正则化将系数w的l1范数作为惩罚项加到损失函数上，由于正则项非零，这就迫使那些弱的特征所对应的系数变成0。因此L1正则化往往会使学到的模型很稀疏（系数w经常为0），这个特性使得L1正则化成为一种很好的特征选择方法。</p>
+<p>Scikit-learn为线性回归提供了Lasso，为分类提供了L1逻辑回归。</p>
+<p>下面的例子在波士顿房价数据上运行了Lasso，其中参数alpha是通过grid search进行优化的。</p>
+<div class="highlight"><pre><span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">linear_model</span> <span class="n">import</span> <span class="n">Lasso</span>
+<span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">preprocessing</span> <span class="n">import</span> <span class="n">StandardScaler</span>
+<span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">datasets</span> <span class="n">import</span> <span class="n">load_boston</span>
+
+<span class="n">boston</span> <span class="o">=</span> <span class="n">load_boston</span><span class="p">()</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">scaler</span><span class="p">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">boston</span><span class="p">[</span><span class="s">&quot;data&quot;</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">boston</span><span class="p">[</span><span class="s">&quot;target&quot;</span><span class="p">]</span>
+<span class="n">names</span> <span class="o">=</span> <span class="n">boston</span><span class="p">[</span><span class="s">&quot;feature_names&quot;</span><span class="p">]</span>
+
+<span class="n">lasso</span> <span class="o">=</span> <span class="n">Lasso</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">.3</span><span class="p">)</span>
+<span class="n">lasso</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+
+<span class="n">print</span> <span class="s">&quot;Lasso model: &quot;</span><span class="p">,</span> <span class="n">pretty_print_linear</span><span class="p">(</span><span class="n">lasso</span><span class="p">.</span><span class="n">coef_</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">True</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Lasso model: -3.707 * LSTAT + 2.992 * RM + -1.757 * PTRATIO + -1.081 * DIS + -0.7 * NOX + 0.631 * B + 0.54 * CHAS + -0.236 * CRIM + 0.081 * ZN + -0.0 * INDUS + -0.0 * AGE + 0.0 * RAD + -0.0 * TAX</p>
+<p>可以看到，很多特征的系数都是0。如果继续增加alpha的值，得到的模型就会越来越稀疏，即越来越多的特征系数会变成0。</p>
+<p>然而，L1正则化像非正则化线性模型一样也是不稳定的，如果特征集合中具有相关联的特征，当数据发生细微变化时也有可能导致很大的模型差异。</p>
+<h2>3.3 L2正则化/Ridge regression</h2>
+<p>L2正则化将系数向量的L2范数添加到了损失函数中。由于L2惩罚项中系数是二次方的，这使得L2和L1有着诸多差异，最明显的一点就是，L2正则化会让系数的取值变得平均。对于关联特征，这意味着他们能够获得更相近的对应系数。还是以Y=X1+X2为例，假设X1和X2具有很强的关联，如果用L1正则化，不论学到的模型是Y=X1+X2还是Y=2X1，惩罚都是一样的，都是2<em>alpha。但是对于L2来说，第一个模型的惩罚项是2</em>alpha，但第二个模型的是4*alpha。可以看出，系数之和为常数时，各系数相等时惩罚是最小的，所以才有了L2会让各个系数趋于相同的特点。</p>
+<p>可以看出，L2正则化对于特征选择来说一种稳定的模型，不像L1正则化那样，系数会因为细微的数据变化而波动。所以L2正则化和L1正则化提供的价值是不同的，L2正则化对于特征理解来说更加有用：表示能力强的特征对应的系数是非零。</p>
+<p>回过头来看看3个互相关联的特征的例子，分别以10个不同的种子随机初始化运行10次，来观察L1和L2正则化的稳定性。</p>
+<div class="highlight"><pre><span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">linear_model</span> <span class="n">import</span> <span class="n">Ridge</span>
+<span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">metrics</span> <span class="n">import</span> <span class="n">r2_score</span>
+<span class="n">size</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="cp">#We run the method 10 times with different random seeds</span>
+<span class="k">for</span> <span class="n">i</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">print</span> <span class="s">&quot;Random seed %s&quot;</span> <span class="o">%</span> <span class="n">i</span>
+    <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">X_seed</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+    <span class="n">X1</span> <span class="o">=</span> <span class="n">X_seed</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">.1</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+    <span class="n">X2</span> <span class="o">=</span> <span class="n">X_seed</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">.1</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+    <span class="n">X3</span> <span class="o">=</span> <span class="n">X_seed</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">.1</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">X1</span> <span class="o">+</span> <span class="n">X2</span> <span class="o">+</span> <span class="n">X3</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span><span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">X3</span><span class="p">]).</span><span class="n">T</span>
+
+
+    <span class="n">lr</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+    <span class="n">lr</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">)</span>
+    <span class="n">print</span> <span class="s">&quot;Linear model:&quot;</span><span class="p">,</span> <span class="n">pretty_print_linear</span><span class="p">(</span><span class="n">lr</span><span class="p">.</span><span class="n">coef_</span><span class="p">)</span>
+
+    <span class="n">ridge</span> <span class="o">=</span> <span class="n">Ridge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">ridge</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">)</span>
+    <span class="n">print</span> <span class="s">&quot;Ridge model:&quot;</span><span class="p">,</span> <span class="n">pretty_print_linear</span><span class="p">(</span><span class="n">ridge</span><span class="p">.</span><span class="n">coef_</span><span class="p">)</span>
+    <span class="n">print</span>
+</pre></div>
+
+
+<p>Random seed 0
+Linear model: 0.728 * X0 + 2.309 * X1 + -0.082 * X2
+Ridge model: 0.938 * X0 + 1.059 * X1 + 0.877 * X2</p>
+<p>Random seed 1
+Linear model: 1.152 * X0 + 2.366 * X1 + -0.599 * X2
+Ridge model: 0.984 * X0 + 1.068 * X1 + 0.759 * X2</p>
+<p>Random seed 2
+Linear model: 0.697 * X0 + 0.322 * X1 + 2.086 * X2
+Ridge model: 0.972 * X0 + 0.943 * X1 + 1.085 * X2</p>
+<p>Random seed 3
+Linear model: 0.287 * X0 + 1.254 * X1 + 1.491 * X2
+Ridge model: 0.919 * X0 + 1.005 * X1 + 1.033 * X2</p>
+<p>Random seed 4
+Linear model: 0.187 * X0 + 0.772 * X1 + 2.189 * X2
+Ridge model: 0.964 * X0 + 0.982 * X1 + 1.098 * X2</p>
+<p>Random seed 5
+Linear model: -1.291 * X0 + 1.591 * X1 + 2.747 * X2
+Ridge model: 0.758 * X0 + 1.011 * X1 + 1.139 * X2</p>
+<p>Random seed 6
+Linear model: 1.199 * X0 + -0.031 * X1 + 1.915 * X2
+Ridge model: 1.016 * X0 + 0.89 * X1 + 1.091 * X2</p>
+<p>Random seed 7
+Linear model: 1.474 * X0 + 1.762 * X1 + -0.151 * X2
+Ridge model: 1.018 * X0 + 1.039 * X1 + 0.901 * X2</p>
+<p>Random seed 8
+Linear model: 0.084 * X0 + 1.88 * X1 + 1.107 * X2
+Ridge model: 0.907 * X0 + 1.071 * X1 + 1.008 * X2</p>
+<p>Random seed 9
+Linear model: 0.714 * X0 + 0.776 * X1 + 1.364 * X2
+Ridge model: 0.896 * X0 + 0.903 * X1 + 0.98 * X2</p>
+<p>可以看出，不同的数据上线性回归得到的模型（系数）相差甚远，但对于L2正则化模型来说，结果中的系数非常的稳定，差别较小，都比较接近于1，能够反映出数据的内在结构。</p>
+<h1>4 随机森林</h1>
+<p>随机森林具有准确率高、鲁棒性好、易于使用等优点，这使得它成为了目前最流行的机器学习算法之一。随机森林提供了两种特征选择的方法：mean decrease impurity和mean decrease accuracy。</p>
+<h2>4.1 平均不纯度减少 mean decrease impurity</h2>
+<p>随机森林由多个决策树构成。决策树中的每一个节点都是关于某个特征的条件，为的是将数据集按照不同的响应变量一分为二。利用不纯度可以确定节点（最优条件），对于分类问题，通常采用<a href="http://en.wikipedia.org/wiki/Decision_tree_learning#Gini_impurity">基尼不纯度</a>或者<a href="http://en.wikipedia.org/wiki/Information_gain_in_decision_trees">信息增益</a>，对于回归问题，通常采用的是<a href="http://en.wikipedia.org/wiki/Variance">方差</a>或者最小二乘拟合。当训练决策树的时候，可以计算出每个特征减少了多少树的不纯度。对于一个决策树森林来说，可以算出每个特征平均减少了多少不纯度，并把它平均减少的不纯度作为特征选择的值。</p>
+<p>下边的例子是sklearn中基于随机森林的特征重要度度量方法：</p>
+<div class="highlight"><pre><span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">datasets</span> <span class="n">import</span> <span class="n">load_boston</span>
+<span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">ensemble</span> <span class="n">import</span> <span class="n">RandomForestRegressor</span>
+<span class="n">import</span> <span class="n">numpy</span> <span class="n">as</span> <span class="n">np</span>
+<span class="cp">#Load boston housing dataset as an example</span>
+<span class="n">boston</span> <span class="o">=</span> <span class="n">load_boston</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">boston</span><span class="p">[</span><span class="s">&quot;data&quot;</span><span class="p">]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">boston</span><span class="p">[</span><span class="s">&quot;target&quot;</span><span class="p">]</span>
+<span class="n">names</span> <span class="o">=</span> <span class="n">boston</span><span class="p">[</span><span class="s">&quot;feature_names&quot;</span><span class="p">]</span>
+<span class="n">rf</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">()</span>
+<span class="n">rf</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+<span class="n">print</span> <span class="s">&quot;Features sorted by their score:&quot;</span>
+<span class="n">print</span> <span class="n">sorted</span><span class="p">(</span><span class="n">zip</span><span class="p">(</span><span class="n">map</span><span class="p">(</span><span class="n">lambda</span> <span class="n">x</span><span class="o">:</span> <span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">rf</span><span class="p">.</span><span class="n">feature_importances_</span><span class="p">),</span> <span class="n">names</span><span class="p">),</span> 
+             <span class="n">reverse</span><span class="o">=</span><span class="n">True</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Features sorted by their score:
+[(0.5298, 'LSTAT'), (0.4116, 'RM'), (0.0252, 'DIS'), (0.0172, 'CRIM'), (0.0065, 'NOX'), (0.0035, 'PTRATIO'), (0.0021, 'TAX'), (0.0017, 'AGE'), (0.0012, 'B'), (0.0008, 'INDUS'), (0.0004, 'RAD'), (0.0001, 'CHAS'), (0.0, 'ZN')]</p>
+<p>这里特征得分实际上采用的是<a href="http://www.stat.berkeley.edu/~breiman/RandomForests/cc_home.htm#giniimp">Gini Importance</a>。使用基于不纯度的方法的时候，要记住：1、这种方法存在<a href="http://link.springer.com/article/10.1186%2F1471-2105-8-25">偏向</a>，对具有更多类别的变量会更有利；2、对于存在关联的多个特征，其中任意一个都可以作为指示器（优秀的特征），并且一旦某个特征被选择之后，其他特征的重要度就会急剧下降，因为不纯度已经被选中的那个特征降下来了，其他的特征就很难再降低那么多不纯度了，这样一来，只有先被选中的那个特征重要度很高，其他的关联特征重要度往往较低。在理解数据时，这就会造成误解，导致错误的认为先被选中的特征是很重要的，而其余的特征是不重要的，但实际上这些特征对响应变量的作用确实非常接近的（这跟Lasso是很像的）。</p>
+<p><a href="http://en.wikipedia.org/wiki/Random_subspace_method">特征随机选择</a>方法稍微缓解了这个问题，但总的来说并没有完全解决。下面的例子中，X0、X1、X2是三个互相关联的变量，在没有噪音的情况下，输出变量是三者之和。</p>
+<div class="highlight"><pre><span class="n">size</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">X_seed</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+<span class="n">X0</span> <span class="o">=</span> <span class="n">X_seed</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">.1</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+<span class="n">X1</span> <span class="o">=</span> <span class="n">X_seed</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">.1</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+<span class="n">X2</span> <span class="o">=</span> <span class="n">X_seed</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">.1</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span><span class="n">X0</span><span class="p">,</span> <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">]).</span><span class="n">T</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">X0</span> <span class="o">+</span> <span class="n">X1</span> <span class="o">+</span> <span class="n">X2</span>
+
+<span class="n">rf</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">max_features</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">rf</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">);</span>
+<span class="n">print</span> <span class="s">&quot;Scores for X0, X1, X2:&quot;</span><span class="p">,</span> <span class="n">map</span><span class="p">(</span><span class="n">lambda</span> <span class="n">x</span><span class="o">:</span><span class="n">round</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span>
+                                    <span class="n">rf</span><span class="p">.</span><span class="n">feature_importances_</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Scores for X0, X1, X2: [0.278, 0.66, 0.062]</p>
+<p>当计算特征重要性时，可以看到X1的重要度比X2的重要度要高出10倍，但实际上他们真正的重要度是一样的。尽管数据量已经很大且没有噪音，且用了20棵树来做随机选择，但这个问题还是会存在。</p>
+<p>需要注意的一点是，关联特征的打分存在不稳定的现象，这不仅仅是随机森林特有的，大多数基于模型的特征选择方法都存在这个问题。</p>
+<h2>4.2 平均精确率减少 Mean decrease accuracy</h2>
+<p>另一种常用的特征选择方法就是直接度量每个特征对模型精确率的影响。主要思路是打乱每个特征的特征值顺序，并且度量顺序变动对模型的精确率的影响。很明显，对于不重要的变量来说，打乱顺序对模型的精确率影响不会太大，但是对于重要的变量来说，打乱顺序就会降低模型的精确率。</p>
+<p>这个方法sklearn中没有直接提供，但是很容易实现，下面继续在波士顿房价数据集上进行实现。</p>
+<div class="highlight"><pre><span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">cross_validation</span> <span class="n">import</span> <span class="n">ShuffleSplit</span>
+<span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">metrics</span> <span class="n">import</span> <span class="n">r2_score</span>
+<span class="n">from</span> <span class="n">collections</span> <span class="n">import</span> <span class="n">defaultdict</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">boston</span><span class="p">[</span><span class="s">&quot;data&quot;</span><span class="p">]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">boston</span><span class="p">[</span><span class="s">&quot;target&quot;</span><span class="p">]</span>
+
+<span class="n">rf</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">()</span>
+<span class="n">scores</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">list</span><span class="p">)</span>
+
+<span class="cp">#crossvalidate the scores on a number of different random splits of the data</span>
+<span class="k">for</span> <span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span> <span class="n">in</span> <span class="n">ShuffleSplit</span><span class="p">(</span><span class="n">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="mi">100</span><span class="p">,</span> <span class="mf">.3</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span>
+    <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">rf</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+    <span class="n">acc</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">rf</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">X</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">:</span>
+        <span class="n">X_t</span> <span class="o">=</span> <span class="n">X_test</span><span class="p">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">X_t</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span>
+        <span class="n">shuff_acc</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">rf</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_t</span><span class="p">))</span>
+        <span class="n">scores</span><span class="p">[</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]].</span><span class="n">append</span><span class="p">((</span><span class="n">acc</span><span class="o">-</span><span class="n">shuff_acc</span><span class="p">)</span><span class="o">/</span><span class="n">acc</span><span class="p">)</span>
+<span class="n">print</span> <span class="s">&quot;Features sorted by their score:&quot;</span>
+<span class="n">print</span> <span class="n">sorted</span><span class="p">([(</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">mean</span><span class="p">(</span><span class="n">score</span><span class="p">),</span> <span class="mi">4</span><span class="p">),</span> <span class="n">feat</span><span class="p">)</span> <span class="k">for</span>
+              <span class="n">feat</span><span class="p">,</span> <span class="n">score</span> <span class="n">in</span> <span class="n">scores</span><span class="p">.</span><span class="n">items</span><span class="p">()],</span> <span class="n">reverse</span><span class="o">=</span><span class="n">True</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Features sorted by their score:
+[(0.7276, 'LSTAT'), (0.5675, 'RM'), (0.0867, 'DIS'), (0.0407, 'NOX'), (0.0351, 'CRIM'), (0.0233, 'PTRATIO'), (0.0168, 'TAX'), (0.0122, 'AGE'), (0.005, 'B'), (0.0048, 'INDUS'), (0.0043, 'RAD'), (0.0004, 'ZN'), (0.0001, 'CHAS')]</p>
+<p>在这个例子当中，LSTAT和RM这两个特征对模型的性能有着很大的影响，打乱这两个特征的特征值使得模型的性能下降了73%和57%。注意，尽管这些我们是在所有特征上进行了训练得到了模型，然后才得到了每个特征的重要性测试，这并不意味着我们扔掉某个或者某些重要特征后模型的性能就一定会下降很多，因为即便某个特征删掉之后，其关联特征一样可以发挥作用，让模型性能基本上不变。</p>
+<h1>5 两种顶层特征选择算法</h1>
+<p>之所以叫做顶层，是因为他们都是建立在基于模型的特征选择方法基础之上的，例如回归和SVM，在不同的子集上建立模型，然后汇总最终确定特征得分。</p>
+<h2>5.1 稳定性选择 Stability selection</h2>
+<p>稳定性选择是一种基于二次抽样和选择算法相结合较新的方法，选择算法可以是回归、SVM或其他类似的方法。它的主要思想是在不同的数据子集和特征子集上运行特征选择算法，不断的重复，最终汇总特征选择结果，比如可以统计某个特征被认为是重要特征的频率（被选为重要特征的次数除以它所在的子集被测试的次数）。理想情况下，重要特征的得分会接近100%。稍微弱一点的特征得分会是非0的数，而最无用的特征得分将会接近于0。</p>
+<p>sklearn在<a href="http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.RandomizedLasso.html">随机lasso</a>和<a href="http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.RandomizedLogisticRegression.html">随机逻辑回归</a>中有对稳定性选择的实现。</p>
+<div class="highlight"><pre><span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">linear_model</span> <span class="n">import</span> <span class="n">RandomizedLasso</span>
+<span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">datasets</span> <span class="n">import</span> <span class="n">load_boston</span>
+<span class="n">boston</span> <span class="o">=</span> <span class="n">load_boston</span><span class="p">()</span>
+
+<span class="cp">#using the Boston housing data. </span>
+<span class="cp">#Data gets scaled automatically by sklearn&#39;s implementation</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">boston</span><span class="p">[</span><span class="s">&quot;data&quot;</span><span class="p">]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">boston</span><span class="p">[</span><span class="s">&quot;target&quot;</span><span class="p">]</span>
+<span class="n">names</span> <span class="o">=</span> <span class="n">boston</span><span class="p">[</span><span class="s">&quot;feature_names&quot;</span><span class="p">]</span>
+
+<span class="n">rlasso</span> <span class="o">=</span> <span class="n">RandomizedLasso</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.025</span><span class="p">)</span>
+<span class="n">rlasso</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+
+<span class="n">print</span> <span class="s">&quot;Features sorted by their score:&quot;</span>
+<span class="n">print</span> <span class="n">sorted</span><span class="p">(</span><span class="n">zip</span><span class="p">(</span><span class="n">map</span><span class="p">(</span><span class="n">lambda</span> <span class="n">x</span><span class="o">:</span> <span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">rlasso</span><span class="p">.</span><span class="n">scores_</span><span class="p">),</span> 
+                 <span class="n">names</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="n">True</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Features sorted by their score:
+[(1.0, 'RM'), (1.0, 'PTRATIO'), (1.0, 'LSTAT'), (0.62, 'CHAS'), (0.595, 'B'), (0.39, 'TAX'), (0.385, 'CRIM'), (0.25, 'DIS'), (0.22, 'NOX'), (0.125, 'INDUS'), (0.045, 'ZN'), (0.02, 'RAD'), (0.015, 'AGE')]</p>
+<p>在上边这个例子当中，最高的3个特征得分是1.0，这表示他们总会被选作有用的特征（当然，得分会收到正则化参数alpha的影响，但是sklearn的随机lasso能够自动选择最优的alpha）。接下来的几个特征得分就开始下降，但是下降的不是特别急剧，这跟纯lasso的方法和随机森林的结果不一样。能够看出稳定性选择对于克服过拟合和对数据理解来说都是有帮助的：总的来说，好的特征不会因为有相似的特征、关联特征而得分为0，这跟Lasso是不同的。对于特征选择任务，在许多数据集和环境下，稳定性选择往往是性能最好的方法之一。</p>
+<h2>5.2 递归特征消除 Recursive feature elimination (RFE)</h2>
+<p>递归特征消除的主要思想是反复的构建模型（如SVM或者回归模型）然后选出最好的（或者最差的）的特征（可以根据系数来选），把选出来的特征放到一遍，然后在剩余的特征上重复这个过程，直到所有特征都遍历了。这个过程中特征被消除的次序就是特征的排序。因此，这是一种寻找最优特征子集的贪心算法。</p>
+<p>RFE的稳定性很大程度上取决于在迭代的时候底层用哪种模型。例如，假如RFE采用的普通的回归，没有经过正则化的回归是不稳定的，那么RFE就是不稳定的；假如采用的是Ridge，而用Ridge正则化的回归是稳定的，那么RFE就是稳定的。</p>
+<p>Sklearn提供了<a href="http://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.RFE.html">RFE</a>包，可以用于特征消除，还提供了<a href="http://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.RFECV.html">RFECV</a>，可以通过交叉验证来对的特征进行排序。</p>
+<div class="highlight"><pre><span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">feature_selection</span> <span class="n">import</span> <span class="n">RFE</span>
+<span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">linear_model</span> <span class="n">import</span> <span class="n">LinearRegression</span>
+
+<span class="n">boston</span> <span class="o">=</span> <span class="n">load_boston</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">boston</span><span class="p">[</span><span class="s">&quot;data&quot;</span><span class="p">]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">boston</span><span class="p">[</span><span class="s">&quot;target&quot;</span><span class="p">]</span>
+<span class="n">names</span> <span class="o">=</span> <span class="n">boston</span><span class="p">[</span><span class="s">&quot;feature_names&quot;</span><span class="p">]</span>
+
+<span class="cp">#use linear regression as the model</span>
+<span class="n">lr</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+<span class="cp">#rank all features, i.e continue the elimination until the last one</span>
+<span class="n">rfe</span> <span class="o">=</span> <span class="n">RFE</span><span class="p">(</span><span class="n">lr</span><span class="p">,</span> <span class="n">n_features_to_select</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">rfe</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">)</span>
+
+<span class="n">print</span> <span class="s">&quot;Features sorted by their rank:&quot;</span>
+<span class="n">print</span> <span class="n">sorted</span><span class="p">(</span><span class="n">zip</span><span class="p">(</span><span class="n">map</span><span class="p">(</span><span class="n">lambda</span> <span class="n">x</span><span class="o">:</span> <span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">rfe</span><span class="p">.</span><span class="n">ranking_</span><span class="p">),</span> <span class="n">names</span><span class="p">))</span>
+</pre></div>
+
+
+<p>Features sorted by their rank:
+[(1.0, 'NOX'), (2.0, 'RM'), (3.0, 'CHAS'), (4.0, 'PTRATIO'), (5.0, 'DIS'), (6.0, 'LSTAT'), (7.0, 'RAD'), (8.0, 'CRIM'), (9.0, 'INDUS'), (10.0, 'ZN'), (11.0, 'TAX'), (12.0, 'B'), (13.0, 'AGE')]</p>
+<h1>6 一个完整的例子</h1>
+<p>下面将本文所有提到的方法进行实验对比，数据集采用Friedman #1 回归数据（<a href="ftp://ftp.uic.edu/pub/depts/econ/hhstokes/e538/Friedman_mars_1991.pdf">这篇论文</a>中的数据）。数据是用这个公式产生的：
+<img alt="" src="http://i.imgur.com/ERGNG8c.png" />
+X1到X5是由<a href="http://en.wikipedia.org/wiki/Univariate_distribution">单变量分布</a>生成的，e是<a href="http://en.wikipedia.org/wiki/Standard_normal_deviate">标准正态变量</a>N(0,1)。另外，原始的数据集中含有5个噪音变量 X5,...,X10，跟响应变量是独立的。我们增加了4个额外的变量X11,...X14，分别是X1,...,X4的关联变量，通过f(x)=x+N(0,0.01)生成，这将产生大于0.999的关联系数。这样生成的数据能够体现出不同的特征排序方法应对关联特征时的表现。</p>
+<p>接下来将会在上述数据上运行所有的特征选择方法，并且将每种方法给出的得分进行归一化，让取值都落在0-1之间。对于RFE来说，由于它给出的是顺序而不是得分，我们将最好的5个的得分定为1，其他的特征的得分均匀的分布在0-1之间。</p>
+<div class="highlight"><pre><span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">datasets</span> <span class="n">import</span> <span class="n">load_boston</span>
+<span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">linear_model</span> <span class="n">import</span> <span class="p">(</span><span class="n">LinearRegression</span><span class="p">,</span> <span class="n">Ridge</span><span class="p">,</span> 
+                                  <span class="n">Lasso</span><span class="p">,</span> <span class="n">RandomizedLasso</span><span class="p">)</span>
+<span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">feature_selection</span> <span class="n">import</span> <span class="n">RFE</span><span class="p">,</span> <span class="n">f_regression</span>
+<span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">preprocessing</span> <span class="n">import</span> <span class="n">MinMaxScaler</span>
+<span class="n">from</span> <span class="n">sklearn</span><span class="p">.</span><span class="n">ensemble</span> <span class="n">import</span> <span class="n">RandomForestRegressor</span>
+<span class="n">import</span> <span class="n">numpy</span> <span class="n">as</span> <span class="n">np</span>
+<span class="n">from</span> <span class="n">minepy</span> <span class="n">import</span> <span class="n">MINE</span>
+
+<span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">size</span> <span class="o">=</span> <span class="mi">750</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">14</span><span class="p">))</span>
+
+<span class="cp">#&quot;Friedamn #1” regression problem</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">pi</span><span class="o">*</span><span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">20</span><span class="o">*</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mf">.5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+     <span class="mi">10</span><span class="o">*</span><span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="mi">5</span><span class="o">*</span><span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="cp">#Add 3 additional correlated variables (correlated with X1-X3)</span>
+<span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="mi">10</span><span class="o">:</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="o">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">.025</span><span class="p">,</span> <span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+
+<span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;x%s&quot;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">15</span><span class="p">)]</span>
+
+<span class="n">ranks</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="n">def</span> <span class="n">rank_to_dict</span><span class="p">(</span><span class="n">ranks</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">minmax</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">()</span>
+    <span class="n">ranks</span> <span class="o">=</span> <span class="n">minmax</span><span class="p">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">order</span><span class="o">*</span><span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span><span class="n">ranks</span><span class="p">]).</span><span class="n">T</span><span class="p">).</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ranks</span> <span class="o">=</span> <span class="n">map</span><span class="p">(</span><span class="n">lambda</span> <span class="n">x</span><span class="o">:</span> <span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">ranks</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dict</span><span class="p">(</span><span class="n">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">ranks</span> <span class="p">))</span>
+
+<span class="n">lr</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="n">True</span><span class="p">)</span>
+<span class="n">lr</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+<span class="n">ranks</span><span class="p">[</span><span class="s">&quot;Linear reg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rank_to_dict</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">abs</span><span class="p">(</span><span class="n">lr</span><span class="p">.</span><span class="n">coef_</span><span class="p">),</span> <span class="n">names</span><span class="p">)</span>
+
+<span class="n">ridge</span> <span class="o">=</span> <span class="n">Ridge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">ridge</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+<span class="n">ranks</span><span class="p">[</span><span class="s">&quot;Ridge&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rank_to_dict</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ridge</span><span class="p">.</span><span class="n">coef_</span><span class="p">),</span> <span class="n">names</span><span class="p">)</span>
+
+
+<span class="n">lasso</span> <span class="o">=</span> <span class="n">Lasso</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">.05</span><span class="p">)</span>
+<span class="n">lasso</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+<span class="n">ranks</span><span class="p">[</span><span class="s">&quot;Lasso&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rank_to_dict</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">abs</span><span class="p">(</span><span class="n">lasso</span><span class="p">.</span><span class="n">coef_</span><span class="p">),</span> <span class="n">names</span><span class="p">)</span>
+
+
+<span class="n">rlasso</span> <span class="o">=</span> <span class="n">RandomizedLasso</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
+<span class="n">rlasso</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+<span class="n">ranks</span><span class="p">[</span><span class="s">&quot;Stability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rank_to_dict</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rlasso</span><span class="p">.</span><span class="n">scores_</span><span class="p">),</span> <span class="n">names</span><span class="p">)</span>
+
+<span class="cp">#stop the search when 5 features are left (they will get equal scores)</span>
+<span class="n">rfe</span> <span class="o">=</span> <span class="n">RFE</span><span class="p">(</span><span class="n">lr</span><span class="p">,</span> <span class="n">n_features_to_select</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">rfe</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">)</span>
+<span class="n">ranks</span><span class="p">[</span><span class="s">&quot;RFE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rank_to_dict</span><span class="p">(</span><span class="n">map</span><span class="p">(</span><span class="kt">float</span><span class="p">,</span> <span class="n">rfe</span><span class="p">.</span><span class="n">ranking_</span><span class="p">),</span> <span class="n">names</span><span class="p">,</span> <span class="n">order</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">rf</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">()</span>
+<span class="n">rf</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">)</span>
+<span class="n">ranks</span><span class="p">[</span><span class="s">&quot;RF&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rank_to_dict</span><span class="p">(</span><span class="n">rf</span><span class="p">.</span><span class="n">feature_importances_</span><span class="p">,</span> <span class="n">names</span><span class="p">)</span>
+
+
+<span class="n">f</span><span class="p">,</span> <span class="n">pval</span>  <span class="o">=</span> <span class="n">f_regression</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">True</span><span class="p">)</span>
+<span class="n">ranks</span><span class="p">[</span><span class="s">&quot;Corr.&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rank_to_dict</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">names</span><span class="p">)</span>
+
+<span class="n">mine</span> <span class="o">=</span> <span class="n">MINE</span><span class="p">()</span>
+<span class="n">mic_scores</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="n">X</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">:</span>
+    <span class="n">mine</span><span class="p">.</span><span class="n">compute_score</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">i</span><span class="p">],</span> <span class="n">Y</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">mine</span><span class="p">.</span><span class="n">mic</span><span class="p">()</span>
+    <span class="n">mic_scores</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+<span class="n">ranks</span><span class="p">[</span><span class="s">&quot;MIC&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rank_to_dict</span><span class="p">(</span><span class="n">mic_scores</span><span class="p">,</span> <span class="n">names</span><span class="p">)</span>
+
+
+<span class="n">r</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">name</span> <span class="n">in</span> <span class="n">names</span><span class="o">:</span>
+    <span class="n">r</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">mean</span><span class="p">([</span><span class="n">ranks</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> 
+                             <span class="k">for</span> <span class="n">method</span> <span class="n">in</span> <span class="n">ranks</span><span class="p">.</span><span class="n">keys</span><span class="p">()]),</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">methods</span> <span class="o">=</span> <span class="n">sorted</span><span class="p">(</span><span class="n">ranks</span><span class="p">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="n">ranks</span><span class="p">[</span><span class="s">&quot;Mean&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+<span class="n">methods</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;Mean&quot;</span><span class="p">)</span>
+
+<span class="n">print</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">%s&quot;</span> <span class="o">%</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">methods</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span> <span class="n">in</span> <span class="n">names</span><span class="o">:</span>
+    <span class="n">print</span> <span class="s">&quot;%s</span><span class="se">\t</span><span class="s">%s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">map</span><span class="p">(</span><span class="n">str</span><span class="p">,</span> 
+                         <span class="p">[</span><span class="n">ranks</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">method</span> <span class="n">in</span> <span class="n">methods</span><span class="p">])))</span>
+</pre></div>
+
+
+<p><img alt="" src="http://i.imgur.com/5ybQKSP.png" />
+从以上结果中可以找到一些有趣的发现：</p>
+<p>特征之间存在<strong>线性关联</strong>关系，每个特征都是独立评价的，因此X1,...X4的得分和X11,...X14的得分非常接近，而噪音特征X5,...,X10正如预期的那样和响应变量之间几乎没有关系。由于变量X3是二次的，因此X3和响应变量之间看不出有关系（除了MIC之外，其他方法都找不到关系）。这种方法能够衡量出特征和响应变量之间的线性关系，但若想选出优质特征来提升模型的泛化能力，这种方法就不是特别给力了，因为所有的优质特征都不可避免的会被挑出来两次。</p>
+<p><strong>Lasso</strong>能够挑出一些优质特征，同时让其他特征的系数趋于0。当如需要减少特征数的时候它很有用，但是对于数据理解来说不是很好用。（例如在结果表中，X11,X12,X13的得分都是0，好像他们跟输出变量之间没有很强的联系，但实际上不是这样的）</p>
+<p><strong>MIC</strong>对特征一视同仁，这一点上和关联系数有点像，另外，它能够找出X3和响应变量之间的非线性关系。</p>
+<p><strong>随机森林</strong>基于不纯度的排序结果非常鲜明，在得分最高的几个特征之后的特征，得分急剧的下降。从表中可以看到，得分第三的特征比第一的小4倍。而其他的特征选择算法就没有下降的这么剧烈。</p>
+<p><strong>Ridge</strong>将回归系数均匀的分摊到各个关联变量上，从表中可以看出，X11,...,X14和X1,...,X4的得分非常接近。</p>
+<p><strong>稳定性选择</strong>常常是一种既能够有助于理解数据又能够挑出优质特征的这种选择，在结果表中就能很好的看出。像Lasso一样，它能找到那些性能比较好的特征（X1，X2，X4，X5），同时，与这些特征关联度很强的变量也得到了较高的得分。</p>
+<h1>总结</h1>
+<ol>
+<li>对于理解数据、数据的结构、特点来说，单变量特征选择是个非常好的选择。尽管可以用它对特征进行排序来优化模型，但由于它不能发现冗余（例如假如一个特征子集，其中的特征之间具有很强的关联，那么从中选择最优的特征时就很难考虑到冗余的问题）。</li>
+<li>正则化的线性模型对于特征理解和特征选择来说是非常强大的工具。L1正则化能够生成稀疏的模型，对于选择特征子集来说非常有用；相比起L1正则化，L2正则化的表现更加稳定，由于有用的特征往往对应系数非零，因此L2正则化对于数据的理解来说很合适。由于响应变量和特征之间往往是非线性关系，可以采用basis expansion的方式将特征转换到一个更加合适的空间当中，在此基础上再考虑运用简单的线性模型。</li>
+<li>随机森林是一种非常流行的特征选择方法，它易于使用，一般不需要feature engineering、调参等繁琐的步骤，并且很多工具包都提供了平均不纯度下降方法。它的两个主要问题，1是重要的特征有可能得分很低（关联特征问题），2是这种方法对特征变量类别多的特征越有利（偏向问题）。尽管如此，这种方法仍然非常值得在你的应用中试一试。</li>
+<li>特征选择在很多机器学习和数据挖掘场景中都是非常有用的。在使用的时候要弄清楚自己的目标是什么，然后找到哪种方法适用于自己的任务。当选择最优特征以提升模型性能的时候，可以采用交叉验证的方法来验证某种方法是否比其他方法要好。当用特征选择的方法来理解数据的时候要留心，特征选择模型的稳定性非常重要，稳定性差的模型很容易就会导致错误的结论。对数据进行二次采样然后在子集上运行特征选择算法能够有所帮助，如果在各个子集上的结果是一致的，那就可以说在这个数据集上得出来的结论是可信的，可以用这种特征选择模型的结果来理解数据。</li>
+</ol>
+<h1>Tips</h1>
+<p>什么是<a href="http://en.wikipedia.org/wiki/Chi-square_test">卡方检验</a>？用方差来衡量某个观测频率和理论频率之间差异性的方法</p>
+<p>什么是<a href="http://en.wikipedia.org/wiki/Pearson%27s_chi-squared_test">皮尔森卡方检验</a>？这是一种最常用的卡方检验方法，它有两个用途：1是计算某个变量对某种分布的拟合程度，2是根据两个观测变量的<a href="http://en.wikipedia.org/wiki/Contingency_table">Contingency table</a>来计算这两个变量是否是独立的。主要有三个步骤：第一步用方差和的方式来计算观测频率和理论频率之间卡方值；第二步算出卡方检验的自由度（行数-1乘以列数-1）；第三步比较卡方值和对应自由度的卡方分布，判断显著性。</p>
+<p>什么是<a href="http://en.wikipedia.org/wiki/P-value">p-value</a>？简单地说，p-value就是为了验证假设和实际之间一致性的统计学意义的值，即假设检验。有些地方叫右尾概率，根据卡方值和自由度可以算出一个固定的p-value，</p>
+<p>什么是<a href="http://www.answers.com/Q/What_is_a_response_variable">响应变量(response value)</a>？简单地说，模型的输入叫做explanatroy variables，模型的输出叫做response variables，其实就是要验证该特征对结果造成了什么样的影响</p>
+<p>什么是<a href="http://en.wikipedia.org/wiki/Statistical_power">统计能力(statistical power)</a>?</p>
+<p>什么是<a href="http://en.wikipedia.org/wiki/Metric_%28mathematics%29">度量(metric)</a>?</p>
+<p>什么是<a href="http://zh.wikipedia.org/wiki/%E9%9B%B6%E5%81%87%E8%AE%BE">零假设(null hypothesis)</a>?在相关性检验中，一般会取“两者之间无关联”作为零假设，而在独立性检验中，一般会取“两者之间是独立”作为零假设。与零假设相对的是备择假设（对立假设），即希望证明是正确的另一种可能。</p>
+<p>什么是<a href="http://en.wikipedia.org/wiki/Multicollinearity">多重共线性</a>？</p>
+<p>什么是<a href="http://scikit-learn.org/stable/modules/grid_search.html">grid search</a>？</p>
+<h1>That's it</h1>
+<h1>References</h1>
+<ol>
+<li>http://blog.datadive.net/selecting-good-features-part-i-univariate-selection/</li>
+<li>http://blog.datadive.net/selecting-good-features-part-ii-linear-models-and-regularization/</li>
+<li>http://scikit-learn.org/stable/modules/feature_selection.html#univariate-feature-selection</li>
+<li>http://www.quora.com/What-are-some-feature-selection-methods</li>
+<li>http://www.quora.com/What-are-some-feature-selection-algorithms</li>
+<li>http://www.quora.com/What-are-some-feature-selection-methods-for-SVMs</li>
+<li>http://www.quora.com/What-is-the-difference-between-principal-component-analysis-PCA-and-feature-selection-in-machine-learning-Is-PCA-a-means-of-feature-selection</li>
+</ol>
+  </div>
+
+
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'zchaosblog';
+        var disqus_identifier = "te-zheng-xuan-ze.html";
+        var disqus_title = "特征选择";
+        var disqus_url = "http://www.chaoslog.com/te-zheng-xuan-ze.html";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus</a>.</noscript>
+    </div>
+
+          </div>
+
+            <div class="span3">
+  <div class="well">
+
+    <p><abbr class="fa fa-calendar" title="2015-03-23T00:00:00+08:00"> 2015-03-23</abbr></p>
+
+      <p><address class="fa fa-user"> By <a href="http://www.chaoslog.com/author/edwin-jarvis.html" rel="author">Edwin Jarvis</a></address></p>
+
+
+    <hr/>
+
+      <p>
+              <a href="http://www.chaoslog.com/category/feature-selection.html" rel="tag tooltip" class="label label-info" data-placement="right" data-original-title="1 article in this category">Feature Selection</a>
+            <a href="/tag/lasso.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">Lasso</a>
+            <a href="/tag/ridge.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">Ridge</a>
+            <a href="/tag/pearson.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">Pearson</a>
+            <a href="/tag/machine-learning.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">Machine Learning</a>
+            <a href="/tag/te-zheng-xuan-ze.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">特征选择</a>
+            <a href="/tag/svm.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">SVM</a>
+            <a href="/tag/ji-qi-xue-xi.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">机器学习</a>
+            <a href="/tag/random-forest.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">Random Forest</a>
+            <a href="/tag/feature-selection.html" rel="tooltip" class="label" data-placement="right" data-original-title="1 article with this tag">Feature Selection</a>
+      </p>
+      <hr/>
+
+
+
+  </div>
+              
+            </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- TODO: make footer sticky -->
+    <footer class="container-fluid">
+      <div class="container">
+        <div class="row">
+
+            <div class="span2">
+                <h5>Social</h5>
+                <ul class="unstyled">
+                  <li>  <a href="http://weibo.com/271421133">
+      <img src="http://g.etfv.co/http://weibo.com?defaulticon=lightpng" width="16" height="16" class="icon" alt="weibo.com icon"/>
+    微博
+  </a></li>
+                  <li>  <a href="https://twitter.com/kukumayas">
+      <i class="fa fa-twitter"></i>
+    twitter
+  </a></li>
+                  <li>  <a href="https://www.linkedin.com/in/kukumayas">
+      <img src="http://g.etfv.co/http://www.linkedin.com?defaulticon=lightpng" width="16" height="16" class="icon" alt="www.linkedin.com icon"/>
+    linkedin
+  </a></li>
+                  <li>  <a href="https://github.com/kukumayas">
+      <i class="fa fa-github"></i>
+    github
+  </a></li>
+                </ul>
+            </div>
+            <div class="span2">
+            </div>
+
+          <div class="span2">
+            <h5>Browse content by</h5>
+            <ul class="fa-ul">
+
+            </ul>
+          </div>
+
+          <div class="span2 muted">
+            <h5>Copyright notice</h5>
+            <p>© Copyright 2014-2015 Edwin Jarvis.</p>
+          </div>
+
+          <div class="span2 muted">
+            <h5>Disclaimer</h5>
+              <p>All opinions expressed in this site are my own personal opinions and are not endorsed by, nor do they represent the opinions of my previous, current and future employers or any of its affiliates, partners or customers.</p>
+          </div>
+
+          <div class="span2">
+            <h5 class="pull-right"><a href="#" class="fa fa-arrow-up"> Back to top</a></h5>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="row span12 muted text-center">
+          Site generated by <a href="http://getpelican.com"> Pelican</a>.<br/>
+          <a href="https://github.com/kdeldycke/plumage"> Plumage</a> theme by <a href="http://kevin.deldycke.com">Kevin Deldycke</a>.
+        </div>
+      </div>
+
+    </footer>
+
+    <script src="//code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="//cdn.jsdelivr.net/jquery.magnific-popup/0.9.9/jquery.magnific-popup.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script src="http://www.chaoslog.com/theme/js/jquery.mglass.js"></script>
+    <script src="http://www.chaoslog.com/theme/js/application.js"></script>
+
+  </body>
+</html>
