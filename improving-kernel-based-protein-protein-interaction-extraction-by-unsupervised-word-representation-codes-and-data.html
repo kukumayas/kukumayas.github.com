@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zhs">
+  <head>
+    <meta charset="utf-8"/>
+
+    <title>  "Improving Kernel-Based Protein-Protein Interaction Extraction by Unsupervised Word Representation" - codes and data
+ | Chaoslog</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="author" content=""/>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css"/>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/jquery.magnific-popup/0.9.9/magnific-popup.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/jquery.mglass.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/pygment-solarized-dark.css"/>
+    <link rel="stylesheet" href="http://www.chaoslog.com/theme/css/style.css"/>
+
+    <!-- Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+    <link href='//fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'/>
+    <link href='//fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'/>
+
+
+    <link rel="icon" href="http://www.chaoslog.com/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="http://www.chaoslog.com/favicon.ico" type="image/x-icon">
+
+    <!-- Feeds -->
+
+
+  </head>
+
+  <body>
+    <div class="container">
+
+      <header>
+        <div class="page-header">
+          <h1><a href="http://www.chaoslog.com">Chaoslog</a> <small></small></h1>
+        </div>
+
+        <div class="navbar">
+          <div class="navbar-inner">
+            <a class="brand" href="http://www.chaoslog.com" title="">Chaoslog</a>
+            <ul class="nav">
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <section>
+
+        <div class="row">
+          <div class=" span9  ">
+  <h1>
+    <a href="http://www.chaoslog.com/improving-kernel-based-protein-protein-interaction-extraction-by-unsupervised-word-representation-codes-and-data.html" rel="bookmark" title="Permalink to &#34;Improving Kernel-Based Protein-Protein Interaction Extraction by Unsupervised Word Representation&#34; - codes and data">"Improving Kernel-Based Protein-Protein Interaction Extraction by Unsupervised Word Representation" - codes and data</a>
+  </h1>
+          </div>
+        </div>
+
+        <div class="row">
+
+
+          <div class=" span9 " id="content" role="main">
+  
+
+  <div>
+    <h1><strong>Word Representation</strong></h1>
+<p>Code and data used for BioNLP problems.</p>
+<p>The code and data are based upon <strong>Li et.al “Improving Kernel-Based Protein-Protein Interaction Extraction by Unsupervised Word Representation”</strong></p>
+<p>In the paper, we introduce <strong>three word representation</strong> methods to improve the performance of <strong>Protein-Protein Interaction</strong> task.</p>
+<h2>Resource</h2>
+<p>1.<a href="http://code.google.com/p/word2vec/" title="Word2Vec">Word2Vec</a>:
+a tool that computes continuous distributed representations of words.</p>
+<p>2.<a href="https://opennlp.apache.org/">OpenNLP</a>:a toolkit for the processing of natural language text, such as tokenization, sentence segmentation, part-of-speech tagging.</p>
+<p>3.<a href="http://nlp.stanford.edu/software/lex-parser.shtml">Stanford Parser</a>:a tool that works out the grammatical structure of sentences.</p>
+<p>4.<a href="http://disi.unitn.it/moschitti/Tree-Kernel.htm">SVM-LIGHT-TK</a>:a tool that can calculate the dot product between two feature vectors and the similarity between two syntactic trees simultaneously.</p>
+<p>5.<a href="http://www.ncbi.nlm.nih.gov/pubmed">PubMed</a>:a database that has indexed millions of citations for biomedical literature from MEDLINE (a bibliographic database of life sciences and biomedical information), life science journals, and online books.</p>
+<h2>1.Distributed Representation</h2>
+<p>This methods is based on <a href="http://code.google.com/p/word2vec/" title="Word2Vec">Word2Vec</a>, recently developped by Mikolov.</p>
+<p>We use the <strong>skip-gram</strong> model to obtain the distributed representation from the large-scale unannotated text. Trained on the large-scale text, each word in the corpora is represented as a low-dimensional real-valued vector. In our experiment, the vector dimension is set to 400.</p>
+<p>Distributed representation results:</p>
+<ul>
+<li><a href="http://pan.baidu.com/s/1bn1xVCN">50dim</a> :the vector dimension is set to 50</li>
+<li><a href="http://pan.baidu.com/s/1jGwzWs2">200dim</a>:the vector dimension is set to 200</li>
+<li><a href="http://pan.baidu.com/s/1o6ytDHK">400dim</a>:the vector dimension is set to 400</li>
+</ul>
+<h2>2.Vector Clustering Representation</h2>
+<p>In this work, we employ <a href="http://en.wikipedia.org/wiki/K-means_clustering">K-means algorithm</a> to perform clustering on the word vectors (the vectors in distributed representation).The max iteration C is set to 1000, and the number of clusters <strong>K =1732</strong>.</p>
+<p>Vector clustering representation results:</p>
+<p>-<a href="http://pan.baidu.com/s/14hOS2">K=256</a>: the number of clusters <strong>K =256</strong>.</p>
+<p>-<a href="http://pan.baidu.com/s/1i35VxR3">K=512</a>: the number of clusters <strong>K =512</strong>.</p>
+<p>-<a href="http://pan.baidu.com/s/1i35VxR3">K=1024</a>: the number of clusters <strong>K =1024</strong>.</p>
+<p>-<a href="http://pan.baidu.com/s/1qWogkEw">K=1732</a>: the number of clusters <strong>K =1732</strong>. <strong>This one is applied in our paper.</strong></p>
+<h2>3.Brown clusters</h2>
+<p>Brown algorithm is a classic hierarchical clustering algorithm based on n-gram language models. One shortage of Brown clusters is that it is based solely on bigram statistics, and does not consider word usage in a wider context. In this algorithm, each word gets its own cluster initially. Then, the algorithm repeatedly picks two clusters with the maximum mutual information and merges them into a single cluster until the number of the clusters is equal to the given parameter. The result of Brown clustering algorithm is a binary tree, where each word occupies a single leaf node, and where each leaf node contains a single word. The number of clusters <strong>K =1732</strong>.</p>
+<p>You can download the <a href="https://github.com/percyliang/brown-cluster">code</a>.</p>
+<p>The Brown clusters results in our experiment:</p>
+<ul>
+<li><a href="http://pan.baidu.com/s/1hqretRu">Maps</a></li>
+<li><a href="http://pan.baidu.com/s/1eQpM3CY">Paths</a></li>
+</ul>
+<h2>T-SNE visualization on Distributed Representation</h2>
+<p>Visualizing data using <a href="http://www.jmlr.org/papers/v9/vandermaaten08a.html">t-SNE</a> (Part of words are hidden to make the figure simple).Each vector in the distributed representation method is given a location in a two-dimensional map.</p>
+<p>You can download the <a href="http://pan.baidu.com/s/1c0pkAo4">code</a>.</p>
+<p><img alt="" src="http://i.imgur.com/0TwZKZB.png" /></p>
+  </div>
+
+
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'zchaosblog';
+        var disqus_identifier = "improving-kernel-based-protein-protein-interaction-extraction-by-unsupervised-word-representation-codes-and-data.html";
+        var disqus_title = "&#34;Improving Kernel-Based Protein-Protein Interaction Extraction by Unsupervised Word Representation&#34; - codes and data";
+        var disqus_url = "http://www.chaoslog.com/improving-kernel-based-protein-protein-interaction-extraction-by-unsupervised-word-representation-codes-and-data.html";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus</a>.</noscript>
+    </div>
+
+          </div>
+
+            <div class="span3">
+  <div class="well">
+
+    <p><abbr class="fa fa-calendar" title="2015-03-25T00:00:00+08:00"> 2015-03-25</abbr></p>
+
+      <p><address class="fa fa-user"> By <a href="http://www.chaoslog.com/author/rui-guo.html" rel="author">Rui Guo</a></address></p>
+
+
+    <hr/>
+
+      <p>
+              <a href="http://www.chaoslog.com/category/paper.html" rel="tag tooltip" class="label label-info" data-placement="right" data-original-title="1 article in this category">paper</a>
+      </p>
+      <hr/>
+
+
+
+  </div>
+              
+            </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- TODO: make footer sticky -->
+    <footer class="container-fluid">
+      <div class="container">
+        <div class="row">
+
+            <div class="span2">
+                <h5>Social</h5>
+                <ul class="unstyled">
+                  <li>  <a href="http://weibo.com/271421133">
+      <img src="http://g.etfv.co/http://weibo.com?defaulticon=lightpng" width="16" height="16" class="icon" alt="weibo.com icon"/>
+    微博
+  </a></li>
+                  <li>  <a href="https://twitter.com/kukumayas">
+      <i class="fa fa-twitter"></i>
+    twitter
+  </a></li>
+                  <li>  <a href="https://www.linkedin.com/in/kukumayas">
+      <img src="http://g.etfv.co/http://www.linkedin.com?defaulticon=lightpng" width="16" height="16" class="icon" alt="www.linkedin.com icon"/>
+    linkedin
+  </a></li>
+                  <li>  <a href="https://github.com/kukumayas">
+      <i class="fa fa-github"></i>
+    github
+  </a></li>
+                </ul>
+            </div>
+            <div class="span2">
+            </div>
+
+          <div class="span2">
+            <h5>Browse content by</h5>
+            <ul class="fa-ul">
+
+            </ul>
+          </div>
+
+          <div class="span2 muted">
+            <h5>Copyright notice</h5>
+            <p>© Copyright 2014-2015 Edwin Jarvis.</p>
+          </div>
+
+          <div class="span2 muted">
+            <h5>Disclaimer</h5>
+              <p>All opinions expressed in this site are my own personal opinions and are not endorsed by, nor do they represent the opinions of my previous, current and future employers or any of its affiliates, partners or customers.</p>
+          </div>
+
+          <div class="span2">
+            <h5 class="pull-right"><a href="#" class="fa fa-arrow-up"> Back to top</a></h5>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="row span12 muted text-center">
+          Site generated by <a href="http://getpelican.com"> Pelican</a>.<br/>
+          <a href="https://github.com/kdeldycke/plumage"> Plumage</a> theme by <a href="http://kevin.deldycke.com">Kevin Deldycke</a>.
+        </div>
+      </div>
+
+    </footer>
+
+    <script src="//code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="//cdn.jsdelivr.net/jquery.magnific-popup/0.9.9/jquery.magnific-popup.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script src="http://www.chaoslog.com/theme/js/jquery.mglass.js"></script>
+    <script src="http://www.chaoslog.com/theme/js/application.js"></script>
+
+  </body>
+</html>
